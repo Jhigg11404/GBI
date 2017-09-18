@@ -15,7 +15,7 @@ Public Class clsStoredProcedures
         params.Add("@AppName", AppName)
         params.Add("@Mode", Mode)
 
-        SQLServerConnection_GET = GetDS("Server=AEC-KENTUCKY;Database=GALAXY;User Id= joshig;Pwd=zues88**", "SQLServerConnection_GET", params).Tables(0)
+        SQLServerConnection_GET = GetDS("Server=AEC-KENTUCKY;Database=GALAXY;User Id= GBIAppUser;Pwd=GBI@ppU$ser88**", "SQLServerConnection_GET", params).Tables(0)
 
     End Function
 
