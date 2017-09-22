@@ -39,6 +39,8 @@
 
             GetActiveWave()
 
+            tmrRefresh.Start()
+
         Catch ex As Exception
             ex.ToString()
         End Try
@@ -186,5 +188,18 @@
         Catch ex As Exception
             ex.ToString()
         End Try
+    End Sub
+
+    Private Sub TmrRefresh_Tick(sender As Object, e As EventArgs) Handles tmrRefresh.Tick
+
+        Me.Cursor = Cursors.WaitCursor
+
+        GetActiveWave()
+        GetCarriers()
+        GetDrops()
+        GetMessagesFromGBI()
+        GetLoginfo()
+
+        Me.Cursor = Cursors.Default
     End Sub
 End Class
