@@ -21,7 +21,7 @@ as
 	Auth: Higginbotham, Joshua
 	Called by:   
 
-	--exec dbo.ActivateWave '70909015'
+	--exec dbo.ActivateWave '01413632'
              
 	Date: 09/09/2017
 ===============================================================================
@@ -78,6 +78,11 @@ begin
 	
 	Set @Msg = 'Activating Wave number ' + @Waveid + '.'
 	Exec Galaxy.dbo.AddLogInfo @DateTime = @Now, @Process = @Process, @Message = @Msg
+
+
+	TRUNCATE TABLE Galaxy.dbo.ProductDistribution
+	TRUNCATE TABLE Galaxy.dbo.Waves
+	TRUNCATE TABLE Galaxy.dbo.Profile_Configuration
 	
 		Insert into @WaveTable
 		(
@@ -91,7 +96,7 @@ begin
 			ord.waveid,
 			ord.orderid,
 			dtl.verifybcr,
-			ord.ActiveDest + 3,
+			ord.ActiveDest + 4,
 			dtl.QtyRequired
 		from 
 			[SRV-1LD2APIX01].Apix2.dbo.orders ord

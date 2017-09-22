@@ -4,29 +4,29 @@ IF EXISTS
 (
     SELECT *
     FROM dbo.sysobjects
-    WHERE id = OBJECT_ID(N'[dbo].[GetShortages]')
-          AND OBJECTPROPERTY(id, N'IsProdedure') = 1
+    WHERE id = OBJECT_ID(N'[dbo].[GetMessagesFromGBI]')
+          AND xtype = 'P'
 )
-    DROP PROCEDURE dbo.GetShortages;
+    DROP PROCEDURE dbo.GetMessagesFromGBI;
 GO
 
-/****** Object:  StoredProcedure [dbo].[GetShortages]    Script Date: 9/9/2017 2:14:50 PM ******/
+/****** Object:  StoredProcedure [GBI].[GetMessagesFromGBI]    Script Date: 9/9/2017 2:14:50 PM ******/
 SET ANSI_NULLS ON;
 GO
 SET QUOTED_IDENTIFIER ON;
 GO
-CREATE PROCEDURE [dbo].[GetShortages]
+CREATE PROCEDURE [dbo].GetMessagesFromGBI
 AS
 /*
 ===============================================================================
 	File: 
-	Name: GetShortages
+	Name: GetMessagesFromGBI
 	Desc: AENT - GBI
-		Returns shortages for waves for the GBI sorter
+		Returns records from the Messages table on the Galaxy database
 	Auth: Higginbotham, Joshua
 	Called by:   
              
-	Date: 09/09/2017
+	Date: 09/18/2017
 ===============================================================================
 	Change History
 ===============================================================================
@@ -47,6 +47,7 @@ DECLARE @error_severity INT,
         @return_status SMALLINT;
 -- other work variables
 
+
 --Log Info
 DECLARE @DateTime DATETIME,
         @Now DATETIME,
@@ -58,7 +59,7 @@ DECLARE @DateTime DATETIME,
 
 -- initialise
 SET @return_status = 0;
-SET @Process = 'Proc = GetShortages';
+SET @Process = 'Proc = GetMessagesFromGBI';
 SET @Now = GETDATE();
 
 /*
@@ -68,21 +69,21 @@ SET @Now = GETDATE();
 */
 BEGIN
 
-    SET @Msg = 'Getting shortage Info from the Database';
+    SET @Msg = 'Getting Message Info from the Database';
     EXEC Galaxy.dbo.AddLogInfo @DateTime = @Now,
                                @Process = @Process,
                                @Message = @Msg;
 
-    SELECT [WaveID],
-           [UPC],
-           [sku],
-           [DropLocation],
-           [OrderID],
-           [QtyRequired],
-           [ConfirmedDrops],
-           [QtyRemaining]
-    FROM [Galaxy].[dbo].[ProductDistribution]
-    ORDER BY DropLocation;
+    SELECT TOP 1000
+        [MsgID],
+        [MsgTimestamp],
+        [MsgSeverity],
+        [MsgText],
+        [MsgSource]
+    FROM [Galaxy].[dbo].[Messages]
+	WHERE CONVERT(VARCHAR(15),MsgTimeStamp,110) = CONVERT(VARCHAR(15),GETDATE(),110)
+    ORDER BY MsgId DESC;
 
 END;
+
 

@@ -15,7 +15,47 @@ Public Class clsStoredProcedures
         params.Add("@AppName", AppName)
         params.Add("@Mode", Mode)
 
-        SQLServerConnection_GET = GetDS("Server=AEC-KENTUCKY;Database=GALAXY;User Id= GBIAppUser;Pwd=GBI@ppU$ser88**", "SQLServerConnection_GET", params).Tables(0)
+        SQLServerConnection_GET = GetDS("Server=10.10.213.76;Database=GALAXY;User Id= GBIAppUser;Pwd=GBI@ppU$ser88**", "SQLServerConnection_GET", params).Tables(0)
+
+    End Function
+    Public Function GetActiveWave(ByVal ConnectionString As String, ByVal Waveid As String) As DataSet
+
+        Dim params As New Dictionary(Of String, String)
+        params.Add("@Waveid", Waveid)
+
+        Return GetDS(ConnectionString, "GetActiveWave", params)
+
+    End Function
+
+    Public Function GetDrops(ByVal ConnectionString As String) As DataTable
+
+        Dim params As New Dictionary(Of String, String)
+
+        GetDrops = GetDS(ConnectionString, "GetDrops", params).Tables(0)
+
+    End Function
+
+    Public Function GetShortages(ByVal ConnectionString As String) As DataTable
+
+        Dim params As New Dictionary(Of String, String)
+
+        GetShortages = GetDS(ConnectionString, "GetShortages", params).Tables(0)
+
+    End Function
+
+    Public Function GetCarriers(ByVal ConnectionString As String) As DataTable
+
+        Dim params As New Dictionary(Of String, String)
+
+        GetCarriers = GetDS(ConnectionString, "GetCarriers", params).Tables(0)
+
+    End Function
+
+    Public Function GetMessagesFromGBI(ByVal ConnectionString As String) As DataTable
+
+        Dim params As New Dictionary(Of String, String)
+
+        GetMessagesFromGBI = GetDS(ConnectionString, "GetMessagesFromGBI", params).Tables(0)
 
     End Function
 
@@ -27,19 +67,20 @@ Public Class clsStoredProcedures
 
     End Function
 
-    Public Sub FdxTrkgShipRequest_ADD(ByVal astrConnectionString As String, ByVal astrShipNmbr As String, ByVal astrRequestStr As String, ByVal astrReplyStr As String,
-                                      ByVal astrShipUser As String, ByVal astrShipComputer As String, ByVal astrShipApp As String, ByVal astrShipVersion As String)
+    Public Function PendingWaveLookup(ByVal ConnectionString As String) As DataTable
 
         Dim params As New Dictionary(Of String, String)
-        params.Add("@shipNmbr", astrShipNmbr)
-        params.Add("@requestStr", astrRequestStr)
-        params.Add("@replyStr", astrReplyStr)
-        params.Add("@shipUser", astrShipUser)
-        params.Add("@shipComputer", astrShipComputer)
-        params.Add("@shipApp", astrShipApp)
-        params.Add("@shipVersion", astrShipVersion)
 
-        ExecSPROC(astrConnectionString, "FdxTrkgShipRequest_ADD", params)
+        PendingWaveLookup = GetDS(ConnectionString, "PendingWaveLookup", params).Tables(0)
+
+    End Function
+
+    Public Sub ActivateWave(ByVal ConnectionString As String, ByVal WaveId As String)
+
+        Dim params As New Dictionary(Of String, String)
+        params.Add("@WaveId", WaveId)
+
+        ExecSPROC(ConnectionString, "ActivateWave", params)
 
     End Sub
 

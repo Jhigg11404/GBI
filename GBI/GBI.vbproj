@@ -131,15 +131,18 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Static Data\Galaxy.sql" />
+    <Content Include="Stored Procedures\GetActiveWave.sql" />
+    <Content Include="Stored Procedures\GetCarriers.sql" />
     <Content Include="Stored Procedures\PendingWaveLookup.sql" />
     <Content Include="Stored Procedures\ActivateWave.sql" />
     <Content Include="Stored Procedures\CloseWave.sql" />
+    <Content Include="Stored Procedures\GetDropDetail.sql" />
     <Content Include="Stored Procedures\SendRepick.sql" />
     <Content Include="Stored Procedures\GetShortages.sql" />
     <Content Include="Stored Procedures\AddLogInfo.sql" />
     <Content Include="Stored Procedures\SQLServerConnection_GET.sql" />
     <Content Include="Stored Procedures\GetLogInfo.sql" />
-    <Content Include="Stored Procedures\Template.sql" />
+    <Content Include="Stored Procedures\GetMessagesFromGBI.sql" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -22,43 +22,61 @@ Partial Class frmSortControl
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
+        Dim DataGridViewCellStyle1 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle2 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle3 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle4 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle5 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle6 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle7 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle8 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle9 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle10 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle11 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle12 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle13 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle14 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle15 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle16 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle17 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle18 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Me.TabControl1 = New System.Windows.Forms.TabControl()
         Me.tbHMI = New System.Windows.Forms.TabPage()
+        Me.dgvWaveDtl = New System.Windows.Forms.DataGridView()
         Me.Label4 = New System.Windows.Forms.Label()
-        Me.TextBox4 = New System.Windows.Forms.TextBox()
+        Me.txtUnitsFilled = New System.Windows.Forms.TextBox()
         Me.Label3 = New System.Windows.Forms.Label()
         Me.Button3 = New System.Windows.Forms.Button()
-        Me.Button1 = New System.Windows.Forms.Button()
-        Me.TextBox3 = New System.Windows.Forms.TextBox()
+        Me.btnActivate = New System.Windows.Forms.Button()
+        Me.txtUnitsRequired = New System.Windows.Forms.TextBox()
         Me.Button2 = New System.Windows.Forms.Button()
         Me.Label2 = New System.Windows.Forms.Label()
-        Me.TextBox2 = New System.Windows.Forms.TextBox()
+        Me.txtDestinations = New System.Windows.Forms.TextBox()
         Me.lblOrders = New System.Windows.Forms.Label()
-        Me.TextBox1 = New System.Windows.Forms.TextBox()
+        Me.txtOrders = New System.Windows.Forms.TextBox()
         Me.lblWaveNbr = New System.Windows.Forms.Label()
         Me.txtWaveNmbr = New System.Windows.Forms.TextBox()
-        Me.dgvHMI = New System.Windows.Forms.DataGridView()
         Me.lblWavelist = New System.Windows.Forms.Label()
         Me.lstWaves = New System.Windows.Forms.ListBox()
         Me.tbCarriers = New System.Windows.Forms.TabPage()
-        Me.Label7 = New System.Windows.Forms.Label()
         Me.dgvCarriers = New System.Windows.Forms.DataGridView()
+        Me.Label7 = New System.Windows.Forms.Label()
         Me.tbDrops = New System.Windows.Forms.TabPage()
-        Me.Label6 = New System.Windows.Forms.Label()
         Me.dgvDrops = New System.Windows.Forms.DataGridView()
+        Me.Label6 = New System.Windows.Forms.Label()
         Me.tbShortages = New System.Windows.Forms.TabPage()
+        Me.dgvShortages = New System.Windows.Forms.DataGridView()
         Me.Button4 = New System.Windows.Forms.Button()
         Me.Label5 = New System.Windows.Forms.Label()
-        Me.dgvShortages = New System.Windows.Forms.DataGridView()
         Me.tbLogs = New System.Windows.Forms.TabPage()
-        Me.Label1 = New System.Windows.Forms.Label()
         Me.dgvMessages = New System.Windows.Forms.DataGridView()
+        Me.Label1 = New System.Windows.Forms.Label()
         Me.btnExit = New System.Windows.Forms.Button()
         Me.btnRefresh = New System.Windows.Forms.Button()
-        Me.dgvLog = New System.Windows.Forms.DataGridView()
+        Me.dgvLogs = New System.Windows.Forms.DataGridView()
         Me.TabControl1.SuspendLayout()
         Me.tbHMI.SuspendLayout()
-        CType(Me.dgvHMI, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.dgvWaveDtl, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.tbCarriers.SuspendLayout()
         CType(Me.dgvCarriers, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.tbDrops.SuspendLayout()
@@ -67,7 +85,7 @@ Partial Class frmSortControl
         CType(Me.dgvShortages, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.tbLogs.SuspendLayout()
         CType(Me.dgvMessages, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.dgvLog, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.dgvLogs, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'TabControl1
@@ -85,20 +103,20 @@ Partial Class frmSortControl
         '
         'tbHMI
         '
+        Me.tbHMI.Controls.Add(Me.dgvWaveDtl)
         Me.tbHMI.Controls.Add(Me.Label4)
-        Me.tbHMI.Controls.Add(Me.TextBox4)
+        Me.tbHMI.Controls.Add(Me.txtUnitsFilled)
         Me.tbHMI.Controls.Add(Me.Label3)
         Me.tbHMI.Controls.Add(Me.Button3)
-        Me.tbHMI.Controls.Add(Me.Button1)
-        Me.tbHMI.Controls.Add(Me.TextBox3)
+        Me.tbHMI.Controls.Add(Me.btnActivate)
+        Me.tbHMI.Controls.Add(Me.txtUnitsRequired)
         Me.tbHMI.Controls.Add(Me.Button2)
         Me.tbHMI.Controls.Add(Me.Label2)
-        Me.tbHMI.Controls.Add(Me.TextBox2)
+        Me.tbHMI.Controls.Add(Me.txtDestinations)
         Me.tbHMI.Controls.Add(Me.lblOrders)
-        Me.tbHMI.Controls.Add(Me.TextBox1)
+        Me.tbHMI.Controls.Add(Me.txtOrders)
         Me.tbHMI.Controls.Add(Me.lblWaveNbr)
         Me.tbHMI.Controls.Add(Me.txtWaveNmbr)
-        Me.tbHMI.Controls.Add(Me.dgvHMI)
         Me.tbHMI.Controls.Add(Me.lblWavelist)
         Me.tbHMI.Controls.Add(Me.lstWaves)
         Me.tbHMI.Location = New System.Drawing.Point(4, 22)
@@ -109,6 +127,46 @@ Partial Class frmSortControl
         Me.tbHMI.Text = "HMI"
         Me.tbHMI.UseVisualStyleBackColor = True
         '
+        'dgvWaveDtl
+        '
+        Me.dgvWaveDtl.AllowUserToAddRows = False
+        Me.dgvWaveDtl.AllowUserToDeleteRows = False
+        Me.dgvWaveDtl.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells
+        Me.dgvWaveDtl.BackgroundColor = System.Drawing.SystemColors.ActiveBorder
+        DataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control
+        DataGridViewCellStyle1.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText
+        DataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight
+        DataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText
+        DataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.dgvWaveDtl.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle1
+        Me.dgvWaveDtl.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
+        DataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window
+        DataGridViewCellStyle2.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText
+        DataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight
+        DataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText
+        DataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
+        Me.dgvWaveDtl.DefaultCellStyle = DataGridViewCellStyle2
+        Me.dgvWaveDtl.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically
+        Me.dgvWaveDtl.Location = New System.Drawing.Point(181, 92)
+        Me.dgvWaveDtl.Name = "dgvWaveDtl"
+        Me.dgvWaveDtl.ReadOnly = True
+        DataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control
+        DataGridViewCellStyle3.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText
+        DataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight
+        DataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText
+        DataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.dgvWaveDtl.RowHeadersDefaultCellStyle = DataGridViewCellStyle3
+        Me.dgvWaveDtl.RowHeadersVisible = False
+        Me.dgvWaveDtl.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
+        Me.dgvWaveDtl.Size = New System.Drawing.Size(979, 291)
+        Me.dgvWaveDtl.TabIndex = 227
+        '
         'Label4
         '
         Me.Label4.AutoSize = True
@@ -118,12 +176,12 @@ Partial Class frmSortControl
         Me.Label4.TabIndex = 226
         Me.Label4.Text = "Units Filled:"
         '
-        'TextBox4
+        'txtUnitsFilled
         '
-        Me.TextBox4.Location = New System.Drawing.Point(497, 66)
-        Me.TextBox4.Name = "TextBox4"
-        Me.TextBox4.Size = New System.Drawing.Size(100, 20)
-        Me.TextBox4.TabIndex = 225
+        Me.txtUnitsFilled.Location = New System.Drawing.Point(497, 66)
+        Me.txtUnitsFilled.Name = "txtUnitsFilled"
+        Me.txtUnitsFilled.Size = New System.Drawing.Size(100, 20)
+        Me.txtUnitsFilled.TabIndex = 225
         '
         'Label3
         '
@@ -146,24 +204,24 @@ Partial Class frmSortControl
         Me.Button3.Text = "Abort Wave"
         Me.Button3.UseVisualStyleBackColor = False
         '
-        'Button1
+        'btnActivate
         '
-        Me.Button1.BackColor = System.Drawing.Color.Green
-        Me.Button1.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Button1.ForeColor = System.Drawing.Color.Cornsilk
-        Me.Button1.Location = New System.Drawing.Point(9, 220)
-        Me.Button1.Name = "Button1"
-        Me.Button1.Size = New System.Drawing.Size(116, 37)
-        Me.Button1.TabIndex = 213
-        Me.Button1.Text = "Activate Wave"
-        Me.Button1.UseVisualStyleBackColor = False
+        Me.btnActivate.BackColor = System.Drawing.Color.Green
+        Me.btnActivate.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnActivate.ForeColor = System.Drawing.Color.Cornsilk
+        Me.btnActivate.Location = New System.Drawing.Point(9, 220)
+        Me.btnActivate.Name = "btnActivate"
+        Me.btnActivate.Size = New System.Drawing.Size(116, 37)
+        Me.btnActivate.TabIndex = 213
+        Me.btnActivate.Text = "Activate Wave"
+        Me.btnActivate.UseVisualStyleBackColor = False
         '
-        'TextBox3
+        'txtUnitsRequired
         '
-        Me.TextBox3.Location = New System.Drawing.Point(391, 66)
-        Me.TextBox3.Name = "TextBox3"
-        Me.TextBox3.Size = New System.Drawing.Size(100, 20)
-        Me.TextBox3.TabIndex = 223
+        Me.txtUnitsRequired.Location = New System.Drawing.Point(391, 66)
+        Me.txtUnitsRequired.Name = "txtUnitsRequired"
+        Me.txtUnitsRequired.Size = New System.Drawing.Size(100, 20)
+        Me.txtUnitsRequired.TabIndex = 223
         '
         'Button2
         '
@@ -186,12 +244,12 @@ Partial Class frmSortControl
         Me.Label2.TabIndex = 222
         Me.Label2.Text = "Destinations:"
         '
-        'TextBox2
+        'txtDestinations
         '
-        Me.TextBox2.Location = New System.Drawing.Point(285, 66)
-        Me.TextBox2.Name = "TextBox2"
-        Me.TextBox2.Size = New System.Drawing.Size(100, 20)
-        Me.TextBox2.TabIndex = 221
+        Me.txtDestinations.Location = New System.Drawing.Point(285, 66)
+        Me.txtDestinations.Name = "txtDestinations"
+        Me.txtDestinations.Size = New System.Drawing.Size(100, 20)
+        Me.txtDestinations.TabIndex = 221
         '
         'lblOrders
         '
@@ -202,12 +260,12 @@ Partial Class frmSortControl
         Me.lblOrders.TabIndex = 220
         Me.lblOrders.Text = "Orders:"
         '
-        'TextBox1
+        'txtOrders
         '
-        Me.TextBox1.Location = New System.Drawing.Point(179, 66)
-        Me.TextBox1.Name = "TextBox1"
-        Me.TextBox1.Size = New System.Drawing.Size(100, 20)
-        Me.TextBox1.TabIndex = 219
+        Me.txtOrders.Location = New System.Drawing.Point(179, 66)
+        Me.txtOrders.Name = "txtOrders"
+        Me.txtOrders.Size = New System.Drawing.Size(100, 20)
+        Me.txtOrders.TabIndex = 219
         '
         'lblWaveNbr
         '
@@ -224,14 +282,6 @@ Partial Class frmSortControl
         Me.txtWaveNmbr.Name = "txtWaveNmbr"
         Me.txtWaveNmbr.Size = New System.Drawing.Size(100, 20)
         Me.txtWaveNmbr.TabIndex = 217
-        '
-        'dgvHMI
-        '
-        Me.dgvHMI.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.dgvHMI.Location = New System.Drawing.Point(179, 92)
-        Me.dgvHMI.Name = "dgvHMI"
-        Me.dgvHMI.Size = New System.Drawing.Size(982, 296)
-        Me.dgvHMI.TabIndex = 216
         '
         'lblWavelist
         '
@@ -252,8 +302,8 @@ Partial Class frmSortControl
         '
         'tbCarriers
         '
-        Me.tbCarriers.Controls.Add(Me.Label7)
         Me.tbCarriers.Controls.Add(Me.dgvCarriers)
+        Me.tbCarriers.Controls.Add(Me.Label7)
         Me.tbCarriers.Location = New System.Drawing.Point(4, 22)
         Me.tbCarriers.Name = "tbCarriers"
         Me.tbCarriers.Padding = New System.Windows.Forms.Padding(3)
@@ -261,6 +311,46 @@ Partial Class frmSortControl
         Me.tbCarriers.TabIndex = 1
         Me.tbCarriers.Text = "Carriers"
         Me.tbCarriers.UseVisualStyleBackColor = True
+        '
+        'dgvCarriers
+        '
+        Me.dgvCarriers.AllowUserToAddRows = False
+        Me.dgvCarriers.AllowUserToDeleteRows = False
+        Me.dgvCarriers.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells
+        Me.dgvCarriers.BackgroundColor = System.Drawing.SystemColors.ActiveBorder
+        DataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Control
+        DataGridViewCellStyle4.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.WindowText
+        DataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight
+        DataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText
+        DataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.dgvCarriers.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle4
+        Me.dgvCarriers.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
+        DataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle5.BackColor = System.Drawing.SystemColors.Window
+        DataGridViewCellStyle5.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle5.ForeColor = System.Drawing.SystemColors.ControlText
+        DataGridViewCellStyle5.SelectionBackColor = System.Drawing.SystemColors.Highlight
+        DataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.HighlightText
+        DataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
+        Me.dgvCarriers.DefaultCellStyle = DataGridViewCellStyle5
+        Me.dgvCarriers.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically
+        Me.dgvCarriers.Location = New System.Drawing.Point(36, 45)
+        Me.dgvCarriers.Name = "dgvCarriers"
+        Me.dgvCarriers.ReadOnly = True
+        DataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle6.BackColor = System.Drawing.SystemColors.Control
+        DataGridViewCellStyle6.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle6.ForeColor = System.Drawing.SystemColors.WindowText
+        DataGridViewCellStyle6.SelectionBackColor = System.Drawing.SystemColors.Highlight
+        DataGridViewCellStyle6.SelectionForeColor = System.Drawing.SystemColors.HighlightText
+        DataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.dgvCarriers.RowHeadersDefaultCellStyle = DataGridViewCellStyle6
+        Me.dgvCarriers.RowHeadersVisible = False
+        Me.dgvCarriers.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
+        Me.dgvCarriers.Size = New System.Drawing.Size(1124, 338)
+        Me.dgvCarriers.TabIndex = 218
         '
         'Label7
         '
@@ -272,24 +362,56 @@ Partial Class frmSortControl
         Me.Label7.TabIndex = 3
         Me.Label7.Text = "Carriers:"
         '
-        'dgvCarriers
-        '
-        Me.dgvCarriers.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.dgvCarriers.Location = New System.Drawing.Point(39, 45)
-        Me.dgvCarriers.Name = "dgvCarriers"
-        Me.dgvCarriers.Size = New System.Drawing.Size(1122, 340)
-        Me.dgvCarriers.TabIndex = 2
-        '
         'tbDrops
         '
-        Me.tbDrops.Controls.Add(Me.Label6)
         Me.tbDrops.Controls.Add(Me.dgvDrops)
+        Me.tbDrops.Controls.Add(Me.Label6)
         Me.tbDrops.Location = New System.Drawing.Point(4, 22)
         Me.tbDrops.Name = "tbDrops"
         Me.tbDrops.Size = New System.Drawing.Size(1196, 428)
         Me.tbDrops.TabIndex = 2
         Me.tbDrops.Text = "Drops"
         Me.tbDrops.UseVisualStyleBackColor = True
+        '
+        'dgvDrops
+        '
+        Me.dgvDrops.AllowUserToAddRows = False
+        Me.dgvDrops.AllowUserToDeleteRows = False
+        Me.dgvDrops.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells
+        Me.dgvDrops.BackgroundColor = System.Drawing.SystemColors.ActiveBorder
+        DataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle7.BackColor = System.Drawing.SystemColors.Control
+        DataGridViewCellStyle7.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle7.ForeColor = System.Drawing.SystemColors.WindowText
+        DataGridViewCellStyle7.SelectionBackColor = System.Drawing.SystemColors.Highlight
+        DataGridViewCellStyle7.SelectionForeColor = System.Drawing.SystemColors.HighlightText
+        DataGridViewCellStyle7.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.dgvDrops.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle7
+        Me.dgvDrops.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
+        DataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle8.BackColor = System.Drawing.SystemColors.Window
+        DataGridViewCellStyle8.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle8.ForeColor = System.Drawing.SystemColors.ControlText
+        DataGridViewCellStyle8.SelectionBackColor = System.Drawing.SystemColors.Highlight
+        DataGridViewCellStyle8.SelectionForeColor = System.Drawing.SystemColors.HighlightText
+        DataGridViewCellStyle8.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
+        Me.dgvDrops.DefaultCellStyle = DataGridViewCellStyle8
+        Me.dgvDrops.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically
+        Me.dgvDrops.Location = New System.Drawing.Point(36, 45)
+        Me.dgvDrops.Name = "dgvDrops"
+        Me.dgvDrops.ReadOnly = True
+        DataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle9.BackColor = System.Drawing.SystemColors.Control
+        DataGridViewCellStyle9.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle9.ForeColor = System.Drawing.SystemColors.WindowText
+        DataGridViewCellStyle9.SelectionBackColor = System.Drawing.SystemColors.Highlight
+        DataGridViewCellStyle9.SelectionForeColor = System.Drawing.SystemColors.HighlightText
+        DataGridViewCellStyle9.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.dgvDrops.RowHeadersDefaultCellStyle = DataGridViewCellStyle9
+        Me.dgvDrops.RowHeadersVisible = False
+        Me.dgvDrops.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
+        Me.dgvDrops.Size = New System.Drawing.Size(1124, 338)
+        Me.dgvDrops.TabIndex = 218
         '
         'Label6
         '
@@ -301,25 +423,57 @@ Partial Class frmSortControl
         Me.Label6.TabIndex = 3
         Me.Label6.Text = "Drops:"
         '
-        'dgvDrops
-        '
-        Me.dgvDrops.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.dgvDrops.Location = New System.Drawing.Point(39, 46)
-        Me.dgvDrops.Name = "dgvDrops"
-        Me.dgvDrops.Size = New System.Drawing.Size(1122, 340)
-        Me.dgvDrops.TabIndex = 2
-        '
         'tbShortages
         '
+        Me.tbShortages.Controls.Add(Me.dgvShortages)
         Me.tbShortages.Controls.Add(Me.Button4)
         Me.tbShortages.Controls.Add(Me.Label5)
-        Me.tbShortages.Controls.Add(Me.dgvShortages)
         Me.tbShortages.Location = New System.Drawing.Point(4, 22)
         Me.tbShortages.Name = "tbShortages"
         Me.tbShortages.Size = New System.Drawing.Size(1196, 428)
         Me.tbShortages.TabIndex = 3
         Me.tbShortages.Text = "Shortages"
         Me.tbShortages.UseVisualStyleBackColor = True
+        '
+        'dgvShortages
+        '
+        Me.dgvShortages.AllowUserToAddRows = False
+        Me.dgvShortages.AllowUserToDeleteRows = False
+        Me.dgvShortages.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells
+        Me.dgvShortages.BackgroundColor = System.Drawing.SystemColors.ActiveBorder
+        DataGridViewCellStyle10.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle10.BackColor = System.Drawing.SystemColors.Control
+        DataGridViewCellStyle10.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle10.ForeColor = System.Drawing.SystemColors.WindowText
+        DataGridViewCellStyle10.SelectionBackColor = System.Drawing.SystemColors.Highlight
+        DataGridViewCellStyle10.SelectionForeColor = System.Drawing.SystemColors.HighlightText
+        DataGridViewCellStyle10.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.dgvShortages.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle10
+        Me.dgvShortages.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
+        DataGridViewCellStyle11.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle11.BackColor = System.Drawing.SystemColors.Window
+        DataGridViewCellStyle11.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle11.ForeColor = System.Drawing.SystemColors.ControlText
+        DataGridViewCellStyle11.SelectionBackColor = System.Drawing.SystemColors.Highlight
+        DataGridViewCellStyle11.SelectionForeColor = System.Drawing.SystemColors.HighlightText
+        DataGridViewCellStyle11.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
+        Me.dgvShortages.DefaultCellStyle = DataGridViewCellStyle11
+        Me.dgvShortages.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically
+        Me.dgvShortages.Location = New System.Drawing.Point(36, 45)
+        Me.dgvShortages.Name = "dgvShortages"
+        Me.dgvShortages.ReadOnly = True
+        DataGridViewCellStyle12.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle12.BackColor = System.Drawing.SystemColors.Control
+        DataGridViewCellStyle12.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle12.ForeColor = System.Drawing.SystemColors.WindowText
+        DataGridViewCellStyle12.SelectionBackColor = System.Drawing.SystemColors.Highlight
+        DataGridViewCellStyle12.SelectionForeColor = System.Drawing.SystemColors.HighlightText
+        DataGridViewCellStyle12.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.dgvShortages.RowHeadersDefaultCellStyle = DataGridViewCellStyle12
+        Me.dgvShortages.RowHeadersVisible = False
+        Me.dgvShortages.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
+        Me.dgvShortages.Size = New System.Drawing.Size(1124, 338)
+        Me.dgvShortages.TabIndex = 218
         '
         'Button4
         '
@@ -343,24 +497,56 @@ Partial Class frmSortControl
         Me.Label5.TabIndex = 1
         Me.Label5.Text = "Shortages:"
         '
-        'dgvShortages
-        '
-        Me.dgvShortages.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.dgvShortages.Location = New System.Drawing.Point(39, 46)
-        Me.dgvShortages.Name = "dgvShortages"
-        Me.dgvShortages.Size = New System.Drawing.Size(1122, 340)
-        Me.dgvShortages.TabIndex = 0
-        '
         'tbLogs
         '
-        Me.tbLogs.Controls.Add(Me.Label1)
         Me.tbLogs.Controls.Add(Me.dgvMessages)
+        Me.tbLogs.Controls.Add(Me.Label1)
         Me.tbLogs.Location = New System.Drawing.Point(4, 22)
         Me.tbLogs.Name = "tbLogs"
         Me.tbLogs.Size = New System.Drawing.Size(1196, 428)
         Me.tbLogs.TabIndex = 4
         Me.tbLogs.Text = "Logs"
         Me.tbLogs.UseVisualStyleBackColor = True
+        '
+        'dgvMessages
+        '
+        Me.dgvMessages.AllowUserToAddRows = False
+        Me.dgvMessages.AllowUserToDeleteRows = False
+        Me.dgvMessages.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells
+        Me.dgvMessages.BackgroundColor = System.Drawing.SystemColors.ActiveBorder
+        DataGridViewCellStyle13.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle13.BackColor = System.Drawing.SystemColors.Control
+        DataGridViewCellStyle13.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle13.ForeColor = System.Drawing.SystemColors.WindowText
+        DataGridViewCellStyle13.SelectionBackColor = System.Drawing.SystemColors.Highlight
+        DataGridViewCellStyle13.SelectionForeColor = System.Drawing.SystemColors.HighlightText
+        DataGridViewCellStyle13.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.dgvMessages.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle13
+        Me.dgvMessages.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
+        DataGridViewCellStyle14.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle14.BackColor = System.Drawing.SystemColors.Window
+        DataGridViewCellStyle14.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle14.ForeColor = System.Drawing.SystemColors.ControlText
+        DataGridViewCellStyle14.SelectionBackColor = System.Drawing.SystemColors.Highlight
+        DataGridViewCellStyle14.SelectionForeColor = System.Drawing.SystemColors.HighlightText
+        DataGridViewCellStyle14.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
+        Me.dgvMessages.DefaultCellStyle = DataGridViewCellStyle14
+        Me.dgvMessages.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically
+        Me.dgvMessages.Location = New System.Drawing.Point(37, 52)
+        Me.dgvMessages.Name = "dgvMessages"
+        Me.dgvMessages.ReadOnly = True
+        DataGridViewCellStyle15.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle15.BackColor = System.Drawing.SystemColors.Control
+        DataGridViewCellStyle15.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle15.ForeColor = System.Drawing.SystemColors.WindowText
+        DataGridViewCellStyle15.SelectionBackColor = System.Drawing.SystemColors.Highlight
+        DataGridViewCellStyle15.SelectionForeColor = System.Drawing.SystemColors.HighlightText
+        DataGridViewCellStyle15.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.dgvMessages.RowHeadersDefaultCellStyle = DataGridViewCellStyle15
+        Me.dgvMessages.RowHeadersVisible = False
+        Me.dgvMessages.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
+        Me.dgvMessages.Size = New System.Drawing.Size(1124, 338)
+        Me.dgvMessages.TabIndex = 217
         '
         'Label1
         '
@@ -371,14 +557,6 @@ Partial Class frmSortControl
         Me.Label1.Size = New System.Drawing.Size(103, 25)
         Me.Label1.TabIndex = 1
         Me.Label1.Text = "GBI Log:"
-        '
-        'dgvMessages
-        '
-        Me.dgvMessages.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.dgvMessages.Location = New System.Drawing.Point(37, 39)
-        Me.dgvMessages.Name = "dgvMessages"
-        Me.dgvMessages.Size = New System.Drawing.Size(1109, 371)
-        Me.dgvMessages.TabIndex = 0
         '
         'btnExit
         '
@@ -404,20 +582,52 @@ Partial Class frmSortControl
         Me.btnRefresh.Text = "Refresh"
         Me.btnRefresh.UseVisualStyleBackColor = False
         '
-        'dgvLog
+        'dgvLogs
         '
-        Me.dgvLog.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.dgvLog.Location = New System.Drawing.Point(60, 476)
-        Me.dgvLog.Name = "dgvLog"
-        Me.dgvLog.Size = New System.Drawing.Size(761, 112)
-        Me.dgvLog.TabIndex = 217
+        Me.dgvLogs.AllowUserToAddRows = False
+        Me.dgvLogs.AllowUserToDeleteRows = False
+        Me.dgvLogs.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells
+        Me.dgvLogs.BackgroundColor = System.Drawing.SystemColors.ActiveBorder
+        DataGridViewCellStyle16.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle16.BackColor = System.Drawing.SystemColors.Control
+        DataGridViewCellStyle16.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle16.ForeColor = System.Drawing.SystemColors.WindowText
+        DataGridViewCellStyle16.SelectionBackColor = System.Drawing.SystemColors.Highlight
+        DataGridViewCellStyle16.SelectionForeColor = System.Drawing.SystemColors.HighlightText
+        DataGridViewCellStyle16.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.dgvLogs.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle16
+        Me.dgvLogs.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
+        DataGridViewCellStyle17.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle17.BackColor = System.Drawing.SystemColors.Window
+        DataGridViewCellStyle17.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle17.ForeColor = System.Drawing.SystemColors.ControlText
+        DataGridViewCellStyle17.SelectionBackColor = System.Drawing.SystemColors.Highlight
+        DataGridViewCellStyle17.SelectionForeColor = System.Drawing.SystemColors.HighlightText
+        DataGridViewCellStyle17.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
+        Me.dgvLogs.DefaultCellStyle = DataGridViewCellStyle17
+        Me.dgvLogs.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically
+        Me.dgvLogs.Location = New System.Drawing.Point(22, 463)
+        Me.dgvLogs.Name = "dgvLogs"
+        Me.dgvLogs.ReadOnly = True
+        DataGridViewCellStyle18.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle18.BackColor = System.Drawing.SystemColors.Control
+        DataGridViewCellStyle18.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle18.ForeColor = System.Drawing.SystemColors.WindowText
+        DataGridViewCellStyle18.SelectionBackColor = System.Drawing.SystemColors.Highlight
+        DataGridViewCellStyle18.SelectionForeColor = System.Drawing.SystemColors.HighlightText
+        DataGridViewCellStyle18.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.dgvLogs.RowHeadersDefaultCellStyle = DataGridViewCellStyle18
+        Me.dgvLogs.RowHeadersVisible = False
+        Me.dgvLogs.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
+        Me.dgvLogs.Size = New System.Drawing.Size(855, 133)
+        Me.dgvLogs.TabIndex = 228
         '
         'frmSortControl
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1203, 608)
-        Me.Controls.Add(Me.dgvLog)
+        Me.Controls.Add(Me.dgvLogs)
         Me.Controls.Add(Me.btnExit)
         Me.Controls.Add(Me.btnRefresh)
         Me.Controls.Add(Me.TabControl1)
@@ -426,7 +636,7 @@ Partial Class frmSortControl
         Me.TabControl1.ResumeLayout(False)
         Me.tbHMI.ResumeLayout(False)
         Me.tbHMI.PerformLayout()
-        CType(Me.dgvHMI, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.dgvWaveDtl, System.ComponentModel.ISupportInitialize).EndInit()
         Me.tbCarriers.ResumeLayout(False)
         Me.tbCarriers.PerformLayout()
         CType(Me.dgvCarriers, System.ComponentModel.ISupportInitialize).EndInit()
@@ -439,7 +649,7 @@ Partial Class frmSortControl
         Me.tbLogs.ResumeLayout(False)
         Me.tbLogs.PerformLayout()
         CType(Me.dgvMessages, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.dgvLog, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.dgvLogs, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
 
     End Sub
@@ -453,29 +663,29 @@ Partial Class frmSortControl
     Friend WithEvents btnExit As Button
     Friend WithEvents btnRefresh As Button
     Friend WithEvents Label4 As Label
-    Friend WithEvents TextBox4 As TextBox
+    Friend WithEvents txtUnitsFilled As TextBox
     Friend WithEvents Label3 As Label
     Friend WithEvents Button3 As Button
-    Friend WithEvents Button1 As Button
-    Friend WithEvents TextBox3 As TextBox
+    Friend WithEvents btnActivate As Button
+    Friend WithEvents txtUnitsRequired As TextBox
     Friend WithEvents Button2 As Button
     Friend WithEvents Label2 As Label
-    Friend WithEvents TextBox2 As TextBox
+    Friend WithEvents txtDestinations As TextBox
     Friend WithEvents lblOrders As Label
-    Friend WithEvents TextBox1 As TextBox
+    Friend WithEvents txtOrders As TextBox
     Friend WithEvents lblWaveNbr As Label
     Friend WithEvents txtWaveNmbr As TextBox
-    Friend WithEvents dgvHMI As DataGridView
     Friend WithEvents lblWavelist As Label
     Friend WithEvents lstWaves As ListBox
     Friend WithEvents Label7 As Label
-    Friend WithEvents dgvCarriers As DataGridView
     Friend WithEvents Label6 As Label
-    Friend WithEvents dgvDrops As DataGridView
     Friend WithEvents Button4 As Button
     Friend WithEvents Label5 As Label
-    Friend WithEvents dgvShortages As DataGridView
     Friend WithEvents Label1 As Label
     Friend WithEvents dgvMessages As DataGridView
-    Friend WithEvents dgvLog As DataGridView
+    Friend WithEvents dgvWaveDtl As DataGridView
+    Friend WithEvents dgvCarriers As DataGridView
+    Friend WithEvents dgvDrops As DataGridView
+    Friend WithEvents dgvShortages As DataGridView
+    Friend WithEvents dgvLogs As DataGridView
 End Class

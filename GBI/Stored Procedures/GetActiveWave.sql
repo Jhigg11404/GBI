@@ -4,29 +4,31 @@ IF EXISTS
 (
     SELECT *
     FROM dbo.sysobjects
-    WHERE id = OBJECT_ID(N'[dbo].[GetShortages]')
-          AND OBJECTPROPERTY(id, N'IsProdedure') = 1
+    WHERE id = OBJECT_ID(N'[dbo].[GetActiveWave]')
+          AND xtype = 'P'
 )
-    DROP PROCEDURE dbo.GetShortages;
+    DROP PROCEDURE dbo.GetActiveWave;
 GO
 
-/****** Object:  StoredProcedure [dbo].[GetShortages]    Script Date: 9/9/2017 2:14:50 PM ******/
+/****** Object:  StoredProcedure [GBI].[GetActiveWave]    Script Date: 9/9/2017 2:14:50 PM ******/
 SET ANSI_NULLS ON;
 GO
 SET QUOTED_IDENTIFIER ON;
 GO
-CREATE PROCEDURE [dbo].[GetShortages]
+CREATE PROCEDURE [dbo].GetActiveWave @Waveid VARCHAR(8)
 AS
 /*
 ===============================================================================
 	File: 
-	Name: GetShortages
+	Name: GetActiveWave
 	Desc: AENT - GBI
-		Returns shortages for waves for the GBI sorter
+		Returns active wave info
 	Auth: Higginbotham, Joshua
 	Called by:   
+
+	exec GetActiveWave ''
              
-	Date: 09/09/2017
+	Date: 09/19/2017
 ===============================================================================
 	Change History
 ===============================================================================
@@ -45,7 +47,6 @@ DECLARE @error_severity INT,
         @rowcount INT,
         @result INT,
         @return_status SMALLINT;
--- other work variables
 
 --Log Info
 DECLARE @DateTime DATETIME,
@@ -58,7 +59,7 @@ DECLARE @DateTime DATETIME,
 
 -- initialise
 SET @return_status = 0;
-SET @Process = 'Proc = GetShortages';
+SET @Process = 'Proc = GetActiveWave';
 SET @Now = GETDATE();
 
 /*
@@ -67,22 +68,44 @@ SET @Now = GETDATE();
 ===============================================================================
 */
 BEGIN
-
-    SET @Msg = 'Getting shortage Info from the Database';
+    SET @Msg = 'Checking Wave On GBI';
     EXEC Galaxy.dbo.AddLogInfo @DateTime = @Now,
                                @Process = @Process,
                                @Message = @Msg;
 
-    SELECT [WaveID],
-           [UPC],
-           [sku],
-           [DropLocation],
-           [OrderID],
-           [QtyRequired],
-           [ConfirmedDrops],
-           [QtyRemaining]
-    FROM [Galaxy].[dbo].[ProductDistribution]
-    ORDER BY DropLocation;
+	IF EXISTS
+		(SELECT Waveid FROM galaxy.dbo.waves WHERE status = 'A')
+	Begin
+
+	SELECT 
+		Waveid,
+		COUNT(DISTINCT(orderid)) AS Orderid,
+		COUNT(DISTINCT(dropLocation)) AS DropLocation,
+		SUM(QtyRequired) AS QtyRequired,
+		SUM(ConfirmedDrops) AS ConfirmedDrops
+	FROM Galaxy.dbo.ProductDistribution
+	GROUP BY Waveid
+
+    SELECT TOP 1000
+        [WaveID],
+        [UPC],
+        [SKU],
+        [DropLocation],
+        [OrderID],
+        [QtyRequired],
+        [QtyRemaining],
+        [ConfirmedDrops],
+        [Status],
+        [CartonID]
+    FROM [Galaxy].[dbo].[ProductDistribution];
 
 END;
+
+End
+
+
+
+
+
+
 

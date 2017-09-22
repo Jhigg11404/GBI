@@ -4,29 +4,29 @@ IF EXISTS
 (
     SELECT *
     FROM dbo.sysobjects
-    WHERE id = OBJECT_ID(N'[dbo].[GetShortages]')
+    WHERE id = OBJECT_ID(N'[dbo].[GetDrops]')
           AND OBJECTPROPERTY(id, N'IsProdedure') = 1
 )
-    DROP PROCEDURE dbo.GetShortages;
+    DROP PROCEDURE dbo.GetDrops;
 GO
 
-/****** Object:  StoredProcedure [dbo].[GetShortages]    Script Date: 9/9/2017 2:14:50 PM ******/
+/****** Object:  StoredProcedure [dbo].[GetDrops]    Script Date: 9/9/2017 2:14:50 PM ******/
 SET ANSI_NULLS ON;
 GO
 SET QUOTED_IDENTIFIER ON;
 GO
-CREATE PROCEDURE [dbo].[GetShortages]
+CREATE PROCEDURE [dbo].[GetDrops]
 AS
 /*
 ===============================================================================
 	File: 
-	Name: GetShortages
+	Name: GetDrops
 	Desc: AENT - GBI
-		Returns shortages for waves for the GBI sorter
+		Returns drops for the GBI sorter
 	Auth: Higginbotham, Joshua
 	Called by:   
              
-	Date: 09/09/2017
+	Date: 09/21/2017
 ===============================================================================
 	Change History
 ===============================================================================
@@ -47,19 +47,20 @@ DECLARE @error_severity INT,
         @return_status SMALLINT;
 -- other work variables
 
---Log Info
-DECLARE @DateTime DATETIME,
-        @Now DATETIME,
-        @Process VARCHAR(50),
-        @Message VARCHAR(250),
-        @Msg VARCHAR(250),
-        @Count TINYINT;
-
+  --Log Info
+	Declare 
+	 @DateTime DateTime
+	,@Now DateTime
+	,@Process Varchar(50)
+	,@Message Varchar(250)
+	,@Msg Varchar(250)
+	,@Count tinyint
+	
 
 -- initialise
-SET @return_status = 0;
-SET @Process = 'Proc = GetShortages';
-SET @Now = GETDATE();
+set @return_status = 0
+set @Process = 'Proc = GetDrops'
+set @Now = Getdate()
 
 /*
 ===============================================================================
@@ -68,20 +69,19 @@ SET @Now = GETDATE();
 */
 BEGIN
 
-    SET @Msg = 'Getting shortage Info from the Database';
-    EXEC Galaxy.dbo.AddLogInfo @DateTime = @Now,
-                               @Process = @Process,
-                               @Message = @Msg;
-
-    SELECT [WaveID],
-           [UPC],
-           [sku],
-           [DropLocation],
-           [OrderID],
-           [QtyRequired],
-           [ConfirmedDrops],
-           [QtyRemaining]
+    /****** Script for SelectTopNRows command from SSMS  ******/
+    SELECT OrderID,
+           CartonID,
+           DropLocation,
+           SUM(QtyRequired) AS QtyRequired,
+           SUM(ConfirmedDrops) AS ConfrimedDrops,
+           SUM(QtyRemaining) AS QtyRemaining,
+           [Status]
     FROM [Galaxy].[dbo].[ProductDistribution]
+    GROUP BY OrderID,
+             CartonID,
+             DropLocation,
+             [Status]
     ORDER BY DropLocation;
 
 END;

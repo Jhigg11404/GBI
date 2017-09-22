@@ -75,9 +75,9 @@ begin
 	Order by
 		Log_ID Desc
 
-	Select @Count = @@RowCount 
+	
     
-	Set @Msg = Cast(@Count as varchar(3)) + ' Records returned for the Log Table' 
+	Set @Msg =  ' Records returned for the Log Table' 
 	Exec Galaxy.dbo.AddLogInfo @DateTime = @Now, @Process = @Process, @Message = @Msg
 
 end 
