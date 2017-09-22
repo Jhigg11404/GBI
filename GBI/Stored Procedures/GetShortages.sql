@@ -5,7 +5,7 @@ IF EXISTS
     SELECT *
     FROM dbo.sysobjects
     WHERE id = OBJECT_ID(N'[dbo].[GetShortages]')
-          AND OBJECTPROPERTY(id, N'IsProdedure') = 1
+          AND type = 'P'
 )
     DROP PROCEDURE dbo.GetShortages;
 GO
@@ -82,6 +82,7 @@ BEGIN
            [ConfirmedDrops],
            [QtyRemaining]
     FROM [Galaxy].[dbo].[ProductDistribution]
+	Where QtyRemaining > 0
     ORDER BY DropLocation;
 
 END;
