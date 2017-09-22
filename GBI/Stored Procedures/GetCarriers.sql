@@ -5,7 +5,7 @@ IF EXISTS
     SELECT *
     FROM dbo.sysobjects
     WHERE id = OBJECT_ID(N'[dbo].[GetCarriers]')
-          AND xtype = 'P'
+          AND type = 'P'
 )
     DROP PROCEDURE dbo.GetCarriers;
 GO
@@ -85,7 +85,9 @@ BEGIN
            [ScanTS],
            [SendTS],
            [ConfirmTS]
-    FROM [Galaxy].[dbo].[Carriers];
+    FROM [Galaxy].[dbo].[Carriers]
+    Where intDrop <> ''
+    order by ScanTs desc;
 
 END;
 
