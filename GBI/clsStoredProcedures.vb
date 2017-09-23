@@ -64,6 +64,14 @@ Public Class clsStoredProcedures
 
     End Function
 
+    Public Function SendRepick(ByVal ConnectionString As String) As DataTable
+
+        Dim params As New Dictionary(Of String, String)
+
+        SendRepick = GetDS(ConnectionString, "SendRepick", params).Tables(0)
+
+    End Function
+
     Public Function GetCarriers(ByVal ConnectionString As String) As DataTable
 
         Dim params As New Dictionary(Of String, String)

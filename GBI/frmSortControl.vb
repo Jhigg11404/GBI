@@ -131,6 +131,16 @@ Public Class frmSortControl
         End Try
     End Sub
 
+    Private Sub SendRepick()
+        Try
+
+            tblShortages = sp.SendRepick(ConnectionString)
+
+        Catch ex As Exception
+            ex.ToString()
+        End Try
+    End Sub
+
     Private Sub GetMessagesFromGBI()
         Try
 
@@ -213,7 +223,7 @@ Public Class frmSortControl
         Me.Cursor = Cursors.Default
     End Sub
 
-    Private Sub Button3_Click(sender As Object, e As EventArgs) Handles btnAbort.Click
+    Private Sub BtnAbort_Click(sender As Object, e As EventArgs) Handles btnAbort.Click
 
         Dim result As DialogResult
         result = MessageBox.Show("Are you sure you want to abort the wave?", "Alert!", MessageBoxButtons.YesNo)
@@ -269,6 +279,8 @@ Public Class frmSortControl
         strfilePathName = strfilePath & strfileName
 
         Try
+
+            SendRepick()
 
             ' prep file
             objFileStream = New FileStream(strfilePathName, FileMode.Create, FileAccess.Write)
