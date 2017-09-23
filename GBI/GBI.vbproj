@@ -130,6 +130,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="ReadMe.txt" />
     <Content Include="Static Data\Galaxy.sql" />
     <Content Include="Stored Procedures\VerifyBadge.sql" />
     <Content Include="Stored Procedures\AbortWave.sql" />
