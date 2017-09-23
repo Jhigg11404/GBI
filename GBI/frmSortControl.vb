@@ -235,7 +235,7 @@
             Dim Status As String = tblVerify.Rows(0).Item("Status").ToString
 
             If Status = "Approved" Then
-                sp.AbortWave(ConnectionString, txtWaveNmbr.Text, "Abort")
+                sp.AbortWave(ConnectionString, txtWaveNmbr.Text, "Abort", rtbBadge.Text)
                 txtWaveNmbr.Clear()
                 txtOrders.Clear()
                 txtDestinations.Clear()

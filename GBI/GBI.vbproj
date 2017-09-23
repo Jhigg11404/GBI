@@ -132,6 +132,7 @@
   <ItemGroup>
     <Content Include="ReadMe.txt" />
     <Content Include="Static Data\Galaxy.sql" />
+    <Content Include="Stored Procedures\InsertProcessLog.sql" />
     <Content Include="Stored Procedures\VerifyBadge.sql" />
     <Content Include="Stored Procedures\AbortWave.sql" />
     <Content Include="Stored Procedures\GetActiveWave.sql" />

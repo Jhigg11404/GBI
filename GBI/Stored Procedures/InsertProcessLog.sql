@@ -1,7 +1,7 @@
 ﻿USE [Galaxy]
 GO
-IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = object_id (N'[dbo].[AbortWave]') AND type = 'P') 
-DROP Procedure dbo.AbortWave
+IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = object_id (N'[dbo].[InsertProcessLog]') AND type = 'P') 
+DROP Procedure dbo.InsertProcessLog
 GO
 
 /****** Object:  StoredProcedure [dbo].[AbortWave]    Script Date: 9/9/2017 2:14:50 PM ******/
@@ -9,17 +9,16 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-Create procedure [dbo].[AbortWave]
-@WaveID varchar(8),
-@AbortType varchar(10),
-@BadgeID varchar(10)
+Create procedure [dbo].[InsertProcessLog]
+@BadgeId varchar(10),
+@ProcessName varchar(50)
 as
 /*
 ===============================================================================
 	File: 
-	Name: AbortWave
+	Name: InsertProcessLog
 	Desc: AENT - GBI
-		Aborts a wave on the GBI sorter
+		Inserts record into Process log
 	Auth: Higginbotham, Joshua
 	Called by:   
              
@@ -57,7 +56,7 @@ DECLARE @DateTime DATETIME,
 
 -- initialise
 SET @return_status = 0;
-SET @Process = 'Proc = AbortWave';
+SET @Process = 'Proc = InsertProcessLog';
 SET @Now = GETDATE();
 
 /*
@@ -65,38 +64,24 @@ SET @Now = GETDATE();
 
 ===============================================================================
 */
-If @AbortType = 'Reset'
+
 
 Begin
 
-    SET @Msg = 'Resetting wave ' + @WaveId;
-    EXEC Galaxy.dbo.AddLogInfo @DateTime = @Now,
-                               @Process = @Process,
-                               @Message = @Msg;
-
-	Update Galaxy.dbo.ProductDistribution
-    set ConfirmedDrops  = 0
-    ,QtyRemaining = QtyRequired
-    Where Waveid = @WaveId
+	Insert into Galaxy.dbo.ProcessLog
+	(
+	ProcessName,
+	BadgeId,
+	ProcessDate
+	)
+	Values
+	(
+	@ProcessName,
+	@BadgeId,
+	@Now
+	)
 
 End
-
-Else
-
-    SET @Msg = 'Aborting wave ' + @WaveId;
-    EXEC Galaxy.dbo.AddLogInfo @DateTime = @Now,
-                               @Process = @Process,
-                               @Message = @Msg;
-
-	Begin
-
-	TRUNCATE TABLE Galaxy.dbo.ProductDistribution
-	TRUNCATE TABLE Galaxy.dbo.Waves
-	TRUNCATE TABLE Galaxy.dbo.Profile_Configuration
-
-	End
-
-	Exec Galaxy.dbo.InsertProcessLog @Badgeid, 'AbortWave'
  
 
 

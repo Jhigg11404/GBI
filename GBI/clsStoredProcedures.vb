@@ -19,11 +19,12 @@ Public Class clsStoredProcedures
 
     End Function
 
-    Public Function AbortWave(ByVal ConnectionString As String, ByVal Waveid As String, ByVal AbortType As String) As DataSet
+    Public Function AbortWave(ByVal ConnectionString As String, ByVal Waveid As String, ByVal AbortType As String, ByVal BadgeId As String) As DataSet
 
         Dim params As New Dictionary(Of String, String)
         params.Add("@Waveid", Waveid)
         params.Add("@AbortType", AbortType)
+        params.Add("@BadgeId", BadgeId)
 
         Return GetDS(ConnectionString, "AbortWave", params)
 
