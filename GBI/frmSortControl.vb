@@ -11,12 +11,15 @@
     Private tblDrops As DataTable
     Private tblCarriers As DataTable
     Private tblShortages As DataTable
+    Private tblVerify As DataTable
+
+    'Badge Controls
+
 
     Private ConnectionString As String = ""
 
     Private Sub frmSortControl_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        Dim i As Int16 = 0
-        Dim rowCount As Int16 = 0
+        pnlBadge.Visible = False
         Try
             ConnectionString = sp.SQLServerConnection_GET("GBI", "PROD").Rows(0).Item("ConnectionString").ToString.Trim
 
@@ -25,15 +28,7 @@
         End Try
 
         Try
-
-            tblWavelist = sp.PendingWaveLookup(ConnectionString)
-
-            rowCount = tblWavelist.Rows.Count()
-
-            While rowCount > i
-                lstWaves.Items.Add(tblWavelist.Rows(i).Item("WaveId").ToString())
-                i = i + 1
-            End While
+            GetPendingWaves()
 
             GetLoginfo()
 
@@ -93,6 +88,20 @@
             End Try
         End If
 
+    End Sub
+
+    Private Sub GetPendingWaves()
+        Dim i As Int16 = 0
+        Dim rowCount As Int16 = 0
+        lstWaves.Items.Clear()
+        tblWavelist = sp.PendingWaveLookup(ConnectionString)
+
+        rowCount = tblWavelist.Rows.Count()
+
+        While rowCount > i
+            lstWaves.Items.Add(tblWavelist.Rows(i).Item("WaveId").ToString())
+            i = i + 1
+        End While
     End Sub
 
 
@@ -193,13 +202,53 @@
     Private Sub TmrRefresh_Tick(sender As Object, e As EventArgs) Handles tmrRefresh.Tick
 
         Me.Cursor = Cursors.WaitCursor
-
+        GetPendingWaves()
         GetActiveWave()
         GetCarriers()
         GetDrops()
         GetMessagesFromGBI()
         GetLoginfo()
-
         Me.Cursor = Cursors.Default
+    End Sub
+
+    Private Sub Button3_Click(sender As Object, e As EventArgs) Handles btnAbort.Click
+
+        Dim result As DialogResult
+        result = MessageBox.Show("Are you sure you want to abort the wave?", "Alert!", MessageBoxButtons.YesNo)
+        If result = DialogResult.No Then
+            'Do nothing
+        ElseIf result = DialogResult.Yes Then
+            pnlBadge.Visible = True
+            rtbBadge.Focus()
+        End If
+
+    End Sub
+
+    Private Sub OnKeyDownHandler(ByVal sender As Object, ByVal e As KeyEventArgs) Handles rtbBadge.KeyDown
+
+        If e.KeyCode = Keys.Enter Then
+
+            Dim VerifyDs As DataSet = sp.VerifyBadge(ConnectionString, rtbBadge.Text)
+
+            tblVerify = VerifyDs.Tables(0)
+
+            Dim Status As String = tblVerify.Rows(0).Item("Status").ToString
+
+            If Status = "Approved" Then
+                sp.AbortWave(ConnectionString, txtWaveNmbr.Text, "Abort")
+                txtWaveNmbr.Clear()
+                txtOrders.Clear()
+                txtDestinations.Clear()
+                txtUnitsFilled.Clear()
+                txtUnitsRequired.Clear()
+                dgvWaveDtl.DataSource = Nothing
+                pnlBadge.Visible = False
+                rtbBadge.Clear()
+            Else
+                MessageBox.Show("You are not authorized to run this process, please contact your supervisor!", "Alert", MessageBoxButtons.OK)
+                rtbBadge.Clear()
+            End If
+        End If
+
     End Sub
 End Class

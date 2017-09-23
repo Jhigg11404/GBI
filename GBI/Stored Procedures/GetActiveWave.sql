@@ -86,7 +86,7 @@ BEGIN
 	FROM Galaxy.dbo.ProductDistribution
 	GROUP BY Waveid
 
-    SELECT TOP 1000
+    SELECT
         [WaveID],
         [UPC],
         [SKU],

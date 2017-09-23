@@ -43,14 +43,17 @@ Partial Class frmSortControl
         Dim DataGridViewCellStyle36 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Me.TabControl1 = New System.Windows.Forms.TabControl()
         Me.tbHMI = New System.Windows.Forms.TabPage()
+        Me.pnlBadge = New System.Windows.Forms.Panel()
+        Me.rtbBadge = New System.Windows.Forms.RichTextBox()
+        Me.lblBadge = New System.Windows.Forms.Label()
         Me.dgvWaveDtl = New System.Windows.Forms.DataGridView()
         Me.Label4 = New System.Windows.Forms.Label()
         Me.txtUnitsFilled = New System.Windows.Forms.TextBox()
         Me.Label3 = New System.Windows.Forms.Label()
-        Me.Button3 = New System.Windows.Forms.Button()
+        Me.btnAbort = New System.Windows.Forms.Button()
         Me.btnActivate = New System.Windows.Forms.Button()
         Me.txtUnitsRequired = New System.Windows.Forms.TextBox()
-        Me.Button2 = New System.Windows.Forms.Button()
+        Me.btnClose = New System.Windows.Forms.Button()
         Me.Label2 = New System.Windows.Forms.Label()
         Me.txtDestinations = New System.Windows.Forms.TextBox()
         Me.lblOrders = New System.Windows.Forms.Label()
@@ -78,6 +81,7 @@ Partial Class frmSortControl
         Me.tmrRefresh = New System.Windows.Forms.Timer(Me.components)
         Me.TabControl1.SuspendLayout()
         Me.tbHMI.SuspendLayout()
+        Me.pnlBadge.SuspendLayout()
         CType(Me.dgvWaveDtl, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.tbCarriers.SuspendLayout()
         CType(Me.dgvCarriers, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -106,14 +110,15 @@ Partial Class frmSortControl
         '
         'tbHMI
         '
+        Me.tbHMI.Controls.Add(Me.pnlBadge)
         Me.tbHMI.Controls.Add(Me.dgvWaveDtl)
         Me.tbHMI.Controls.Add(Me.Label4)
         Me.tbHMI.Controls.Add(Me.txtUnitsFilled)
         Me.tbHMI.Controls.Add(Me.Label3)
-        Me.tbHMI.Controls.Add(Me.Button3)
+        Me.tbHMI.Controls.Add(Me.btnAbort)
         Me.tbHMI.Controls.Add(Me.btnActivate)
         Me.tbHMI.Controls.Add(Me.txtUnitsRequired)
-        Me.tbHMI.Controls.Add(Me.Button2)
+        Me.tbHMI.Controls.Add(Me.btnClose)
         Me.tbHMI.Controls.Add(Me.Label2)
         Me.tbHMI.Controls.Add(Me.txtDestinations)
         Me.tbHMI.Controls.Add(Me.lblOrders)
@@ -130,6 +135,38 @@ Partial Class frmSortControl
         Me.tbHMI.TabIndex = 0
         Me.tbHMI.Text = "HMI"
         Me.tbHMI.UseVisualStyleBackColor = True
+        '
+        'pnlBadge
+        '
+        Me.pnlBadge.BackColor = System.Drawing.Color.Red
+        Me.pnlBadge.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.pnlBadge.Controls.Add(Me.rtbBadge)
+        Me.pnlBadge.Controls.Add(Me.lblBadge)
+        Me.pnlBadge.ForeColor = System.Drawing.Color.Yellow
+        Me.pnlBadge.Location = New System.Drawing.Point(1208, 15)
+        Me.pnlBadge.Name = "pnlBadge"
+        Me.pnlBadge.Size = New System.Drawing.Size(532, 100)
+        Me.pnlBadge.TabIndex = 228
+        '
+        'rtbBadge
+        '
+        Me.rtbBadge.Font = New System.Drawing.Font("Microsoft Sans Serif", 16.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.rtbBadge.Location = New System.Drawing.Point(243, 20)
+        Me.rtbBadge.Multiline = False
+        Me.rtbBadge.Name = "rtbBadge"
+        Me.rtbBadge.Size = New System.Drawing.Size(258, 59)
+        Me.rtbBadge.TabIndex = 229
+        Me.rtbBadge.Text = ""
+        '
+        'lblBadge
+        '
+        Me.lblBadge.AutoSize = True
+        Me.lblBadge.Font = New System.Drawing.Font("Microsoft Sans Serif", 24.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblBadge.Location = New System.Drawing.Point(12, 24)
+        Me.lblBadge.Name = "lblBadge"
+        Me.lblBadge.Size = New System.Drawing.Size(225, 55)
+        Me.lblBadge.TabIndex = 229
+        Me.lblBadge.Text = "Badge #:"
         '
         'dgvWaveDtl
         '
@@ -200,18 +237,18 @@ Partial Class frmSortControl
         Me.Label3.TabIndex = 224
         Me.Label3.Text = "Units Required:"
         '
-        'Button3
+        'btnAbort
         '
-        Me.Button3.BackColor = System.Drawing.Color.Red
-        Me.Button3.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Button3.ForeColor = System.Drawing.Color.Cornsilk
-        Me.Button3.Location = New System.Drawing.Point(14, 471)
-        Me.Button3.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
-        Me.Button3.Name = "Button3"
-        Me.Button3.Size = New System.Drawing.Size(174, 57)
-        Me.Button3.TabIndex = 215
-        Me.Button3.Text = "Abort Wave"
-        Me.Button3.UseVisualStyleBackColor = False
+        Me.btnAbort.BackColor = System.Drawing.Color.Red
+        Me.btnAbort.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnAbort.ForeColor = System.Drawing.Color.Cornsilk
+        Me.btnAbort.Location = New System.Drawing.Point(14, 471)
+        Me.btnAbort.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.btnAbort.Name = "btnAbort"
+        Me.btnAbort.Size = New System.Drawing.Size(174, 57)
+        Me.btnAbort.TabIndex = 215
+        Me.btnAbort.Text = "Abort Wave"
+        Me.btnAbort.UseVisualStyleBackColor = False
         '
         'btnActivate
         '
@@ -234,18 +271,18 @@ Partial Class frmSortControl
         Me.txtUnitsRequired.Size = New System.Drawing.Size(148, 26)
         Me.txtUnitsRequired.TabIndex = 223
         '
-        'Button2
+        'btnClose
         '
-        Me.Button2.BackColor = System.Drawing.Color.Red
-        Me.Button2.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Button2.ForeColor = System.Drawing.Color.Cornsilk
-        Me.Button2.Location = New System.Drawing.Point(14, 405)
-        Me.Button2.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
-        Me.Button2.Name = "Button2"
-        Me.Button2.Size = New System.Drawing.Size(174, 57)
-        Me.Button2.TabIndex = 214
-        Me.Button2.Text = "Close Wave"
-        Me.Button2.UseVisualStyleBackColor = False
+        Me.btnClose.BackColor = System.Drawing.Color.Red
+        Me.btnClose.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnClose.ForeColor = System.Drawing.Color.Cornsilk
+        Me.btnClose.Location = New System.Drawing.Point(14, 405)
+        Me.btnClose.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.btnClose.Name = "btnClose"
+        Me.btnClose.Size = New System.Drawing.Size(174, 57)
+        Me.btnClose.TabIndex = 214
+        Me.btnClose.Text = "Close Wave"
+        Me.btnClose.UseVisualStyleBackColor = False
         '
         'Label2
         '
@@ -661,7 +698,7 @@ Partial Class frmSortControl
         '
         'tmrRefresh
         '
-        Me.tmrRefresh.Interval = 10000
+        Me.tmrRefresh.Interval = 20000
         '
         'frmSortControl
         '
@@ -680,6 +717,8 @@ Partial Class frmSortControl
         Me.TabControl1.ResumeLayout(False)
         Me.tbHMI.ResumeLayout(False)
         Me.tbHMI.PerformLayout()
+        Me.pnlBadge.ResumeLayout(False)
+        Me.pnlBadge.PerformLayout()
         CType(Me.dgvWaveDtl, System.ComponentModel.ISupportInitialize).EndInit()
         Me.tbCarriers.ResumeLayout(False)
         Me.tbCarriers.PerformLayout()
@@ -709,10 +748,10 @@ Partial Class frmSortControl
     Friend WithEvents Label4 As Label
     Friend WithEvents txtUnitsFilled As TextBox
     Friend WithEvents Label3 As Label
-    Friend WithEvents Button3 As Button
+    Friend WithEvents btnAbort As Button
     Friend WithEvents btnActivate As Button
     Friend WithEvents txtUnitsRequired As TextBox
-    Friend WithEvents Button2 As Button
+    Friend WithEvents btnClose As Button
     Friend WithEvents Label2 As Label
     Friend WithEvents txtDestinations As TextBox
     Friend WithEvents lblOrders As Label
@@ -733,4 +772,7 @@ Partial Class frmSortControl
     Friend WithEvents dgvShortages As DataGridView
     Friend WithEvents dgvLogs As DataGridView
     Friend WithEvents tmrRefresh As Timer
+    Friend WithEvents pnlBadge As Panel
+    Friend WithEvents lblBadge As Label
+    Friend WithEvents rtbBadge As RichTextBox
 End Class

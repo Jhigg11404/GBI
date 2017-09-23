@@ -18,6 +18,26 @@ Public Class clsStoredProcedures
         SQLServerConnection_GET = GetDS("Server=10.10.213.76;Database=GALAXY;User Id= GBIAppUser;Pwd=GBI@ppU$ser88**", "SQLServerConnection_GET", params).Tables(0)
 
     End Function
+
+    Public Function AbortWave(ByVal ConnectionString As String, ByVal Waveid As String, ByVal AbortType As String) As DataSet
+
+        Dim params As New Dictionary(Of String, String)
+        params.Add("@Waveid", Waveid)
+        params.Add("@AbortType", AbortType)
+
+        Return GetDS(ConnectionString, "AbortWave", params)
+
+    End Function
+
+    Public Function VerifyBadge(ByVal ConnectionString As String, ByVal BadgeId As String) As DataSet
+
+        Dim params As New Dictionary(Of String, String)
+        params.Add("@BadgeId", BadgeId)
+
+        Return GetDS(ConnectionString, "VerifyBadge", params)
+
+    End Function
+
     Public Function GetActiveWave(ByVal ConnectionString As String, ByVal Waveid As String) As DataSet
 
         Dim params As New Dictionary(Of String, String)
@@ -147,8 +167,6 @@ Public Class clsStoredProcedures
     End Sub
 
 #End Region 'SQL Calls
-
-
 
 
 End Class

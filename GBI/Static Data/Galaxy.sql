@@ -82,4 +82,21 @@ INSERT INTO [dbo].[PREPROCESS_RULES]
 		   )
 GO
 
+Use Galaxy
+Go
+Create table ProcessAdmins
+(
+	BadgeId varchar(10) primary Key not null,
+	Fullname varchar(50) not null
+)
+
+Create Table ProcessLog
+(
+	ProcessId int identity(1,1) primary key not null,
+    ProcessName varchar(50) not null,
+    BadgeId varchar(10)not null,
+	ProcessDate datetime not null
+)
+    
+
 
