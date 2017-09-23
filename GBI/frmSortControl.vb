@@ -1,4 +1,6 @@
-﻿Public Class frmSortControl
+﻿Imports System.IO
+
+Public Class frmSortControl
 
     'Instantiate Stored Procedures 
     Private sp As New clsStoredProcedures
@@ -250,5 +252,59 @@
             End If
         End If
 
+    End Sub
+
+    Private Sub createRepick()
+        Dim dsMiss As DataSet
+        Dim strLine As String = String.Empty
+        Dim strfilePath As String = "C:\Users\Admin\Documents\Repicks\"
+        Dim strfileName As String = String.Empty
+        Dim strfilePathName As String = String.Empty
+        Dim objFileStream As FileStream = Nothing
+        Dim objStreamWriter As StreamWriter = Nothing
+
+        Dim strfileDateTime As String = DateTime.Now.ToString("yyyyMMdd") & DateTime.Now.ToString("HHmmssfff")
+
+        strfileName = "GBI-REPICK" & strfileDateTime
+        strfilePathName = strfilePath & strfileName
+
+        Try
+
+            ' prep file
+            objFileStream = New FileStream(strfilePathName, FileMode.Create, FileAccess.Write)
+            objStreamWriter = New StreamWriter(objFileStream)
+
+            ' write to file
+            For i = 0 To tblShortages.Rows.Count - 1
+                For j = 0 To tblShortages.Columns.Count - 1
+                    strLine = strLine & tblShortages.Rows(i).Item(j).ToString & ","
+                Next
+
+                ' remove extraneous comma
+                strLine = strLine.Substring(0, strLine.Length - 1)
+
+                '
+                objStreamWriter.WriteLine(strLine)
+                strLine = ""
+            Next
+
+            ' cleanup
+            objStreamWriter.Close()
+            objFileStream.Close()
+
+            ' create empty done file
+            strfilePathName += ".done"
+            objFileStream = New FileStream(strfilePathName, FileMode.Create, FileAccess.Write)
+            objFileStream.Close()
+
+            MsgBox("RePick File has been created.", MsgBoxStyle.Exclamation)
+
+        Catch ex As Exception
+            ex.ToString()
+        End Try
+    End Sub
+
+    Private Sub btnRepick_Click(sender As Object, e As EventArgs) Handles btnRepick.Click
+        createRepick()
     End Sub
 End Class
