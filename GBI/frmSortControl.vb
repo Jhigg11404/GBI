@@ -17,7 +17,6 @@ Public Class frmSortControl
 
     'Badge Controls
 
-
     Private ConnectionString As String = ""
 
     Private Sub frmSortControl_Load(sender As Object, e As EventArgs) Handles MyBase.Load
