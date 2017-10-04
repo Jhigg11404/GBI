@@ -11,9 +11,10 @@
     <AssemblyName>GBI</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <MyType>WindowsForms</MyType>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <IsWebBootstrapper>false</IsWebBootstrapper>
+    <TargetFrameworkProfile />
     <PublishUrl>\\aent.com\common\Apps\QA\GBI\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Unc</InstallFrom>
@@ -24,8 +25,8 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>true</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <MinimumRequiredVersion>1.0.0.0</MinimumRequiredVersion>
-    <ApplicationRevision>1</ApplicationRevision>
+    <MinimumRequiredVersion>1.0.0.1</MinimumRequiredVersion>
+    <ApplicationRevision>2</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -171,6 +172,9 @@
     <Content Include="Static Data\Galaxy.sql" />
     <Content Include="Stored Procedures\InsertProcessLog.sql" />
     <Content Include="Stored Procedures\AssignCarton.sql" />
+    <Content Include="Stored Procedures\syErrorLog_ADD.sql" />
+    <Content Include="Stored Procedures\SocketConnectionInfo_GET.sql" />
+    <Content Include="Stored Procedures\GBI_Packets_ADD.sql" />
     <Content Include="Stored Procedures\VerifyBadge.sql" />
     <Content Include="Stored Procedures\AbortWave.sql" />
     <Content Include="Stored Procedures\GetActiveWave.sql" />
@@ -197,6 +201,16 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Common\Common.vbproj">
+      <Project>{41924ac0-de55-491d-96d0-0092e109afbd}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ErrorHandling\ErrorHandling.vbproj">
+      <Project>{c5c85c55-4f02-4c5f-a59d-1a299cc6df2b}</Project>
+      <Name>ErrorHandling</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

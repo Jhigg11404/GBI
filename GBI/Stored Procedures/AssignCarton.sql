@@ -10,7 +10,8 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 Create procedure [dbo].[AssignCarton]
-
+@CartonId varchar(30),
+@DropLocation varchar(3)
 as
 /*
 ===============================================================================

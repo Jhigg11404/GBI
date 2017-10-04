@@ -64,9 +64,9 @@ Namespace My
     Friend Module MySettingsProperty
         
         <Global.System.ComponentModel.Design.HelpKeywordAttribute("My.Settings")>  _
-        Friend ReadOnly Property Settings() As Global.GBI.My.MySettings
+        Friend ReadOnly Property Settings() As Global.gbiBoxLoad.My.MySettings
             Get
-                Return Global.GBI.My.MySettings.Default
+                Return Global.gbiBoxLoad.My.MySettings.Default
             End Get
         End Property
     End Module

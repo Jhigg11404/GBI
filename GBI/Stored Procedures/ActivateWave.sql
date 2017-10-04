@@ -96,7 +96,7 @@ begin
 			ord.waveid,
 			ord.orderid,
 			dtl.verifybcr,
-			ord.ActiveDest + 4,
+			ord.ActiveDest + 2,
 			dtl.QtyRequired
 		from 
 			[SRV-1LD2APIX01].Apix2.dbo.orders ord

@@ -1,11 +1,18 @@
 ﻿Imports System.IO
+Imports Common.clsCommon
 
 Public Class frmSortControl
 
     'Instantiate Stored Procedures 
     Private sp As New clsStoredProcedures
+
+    'Instantiate Profile object
+    Dim Profile As Common.objProfile = New Common.objProfile
+
     'Instantiate error handler
-    Private eh As clsErrorHandler
+    Dim eh As New ErrorHandling.clsErrorHandler
+    Dim ep As New Common.errParams(System.Reflection.MethodInfo.GetCurrentMethod.DeclaringType.Name, "", DisplayIt, NotifyIT, LogIt)
+
     'Instantiate Table objects
     Private tblWavelist As DataTable
     Private tblWaveDetail As DataTable
@@ -20,12 +27,30 @@ Public Class frmSortControl
     Private ConnectionString As String = ""
 
     Private Sub frmSortControl_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+
+        With Profile
+            .p_AppMode = "PROD"
+            .p_UserName = My.User.Name
+            .p_UserProf = My.Computer.Name
+            .p_Userlvl = "0"
+            .p_Authenticated = "False"
+            .p_ComputerName = My.Computer.Name
+            .p_AppName = My.Application.Info.AssemblyName
+            .p_AppVersion = String.Format("Version {0}", My.Application.Info.Version.ToString)
+            If Not Debugger.IsAttached And System.Deployment.Application.ApplicationDeployment.IsNetworkDeployed Then
+                Dim Deploy As Version = System.Deployment.Application.ApplicationDeployment.CurrentDeployment.CurrentVersion
+                .p_AppVersion = String.Format("Version {0}.{1}.{2}.{3}", Deploy.Major, Deploy.Minor, Deploy.Build, Deploy.Revision)
+            End If
+        End With
+
         pnlBadge.Visible = False
+
+
         Try
-            ConnectionString = sp.SQLServerConnection_GET("GBI", "PROD").Rows(0).Item("ConnectionString").ToString.Trim
+            Profile.p_ConnectionString = sp.SQLServerConnection_GET("GBI", Profile.p_AppMode).Rows(0).Item("ConnectionString").ToString.Trim
 
         Catch ex As Exception
-            ex.ToString()
+            eh._Err(Profile, "Form Sorter Control Load", ex.Message, ex, NoDisplay, NotifyIT, LogIt)
         End Try
 
         Try
@@ -54,14 +79,14 @@ Public Class frmSortControl
             GetLoginfo()
 
         Catch ex As Exception
-            ex.ToString()
+            eh._Err(Profile, "GetLogInfo", ex.Message, ex, NoDisplay, NotifyIT, LogIt)
         End Try
 
         If TabControl1.SelectedTab.ToString = "TabPage: {Logs}" Then
             Try
                 GetMessagesFromGBI()
             Catch ex As Exception
-                ex.ToString()
+                eh._Err(Profile, "GetMessagesFromGBI", ex.Message, ex, NoDisplay, NotifyIT, LogIt)
             End Try
         End If
 
@@ -69,7 +94,7 @@ Public Class frmSortControl
             Try
                 GetCarriers()
             Catch ex As Exception
-                ex.ToString()
+                eh._Err(Profile, "GetCarriers", ex.Message, ex, NoDisplay, NotifyIT, LogIt)
             End Try
         End If
 
@@ -77,7 +102,7 @@ Public Class frmSortControl
             Try
                 GetDrops()
             Catch ex As Exception
-                ex.ToString()
+                eh._Err(Profile, "GetDrops", ex.Message, ex, NoDisplay, NotifyIT, LogIt)
             End Try
         End If
 
@@ -85,7 +110,7 @@ Public Class frmSortControl
             Try
                 GetShortages()
             Catch ex As Exception
-                ex.ToString()
+                eh._Err(Profile, "GetShortages", ex.Message, ex, NoDisplay, NotifyIT, LogIt)
             End Try
         End If
 
@@ -95,7 +120,8 @@ Public Class frmSortControl
         Dim i As Int16 = 0
         Dim rowCount As Int16 = 0
         lstWaves.Items.Clear()
-        tblWavelist = sp.PendingWaveLookup(ConnectionString)
+
+        tblWavelist = sp.PendingWaveLookup(Profile.p_ConnectionString)
 
         rowCount = tblWavelist.Rows.Count()
 
@@ -109,7 +135,7 @@ Public Class frmSortControl
     Private Sub GetLoginfo()
         Try
 
-            tblLog = sp.GetLogInfo(ConnectionString)
+            tblLog = sp.GetLogInfo(Profile.p_ConnectionString)
 
             dgvLogs.DataSource = tblLog
 
@@ -121,7 +147,7 @@ Public Class frmSortControl
     Private Sub GetShortages()
         Try
 
-            tblShortages = sp.GetShortages(ConnectionString)
+            tblShortages = sp.GetShortages(Profile.p_ConnectionString)
 
             dgvShortages.DataSource = tblShortages
 
@@ -133,7 +159,7 @@ Public Class frmSortControl
     Private Sub SendRepick()
         Try
 
-            tblShortages = sp.SendRepick(ConnectionString)
+            tblShortages = sp.SendRepick(Profile.p_ConnectionString)
 
         Catch ex As Exception
             ex.ToString()
@@ -143,7 +169,7 @@ Public Class frmSortControl
     Private Sub GetMessagesFromGBI()
         Try
 
-            tblLog = sp.GetMessagesFromGBI(ConnectionString)
+            tblLog = sp.GetMessagesFromGBI(Profile.p_ConnectionString)
 
             dgvMessages.DataSource = tblLog
 
@@ -155,7 +181,7 @@ Public Class frmSortControl
     Private Sub GetDrops()
         Try
 
-            tblDrops = sp.GetDrops(ConnectionString)
+            tblDrops = sp.GetDrops(Profile.p_ConnectionString)
 
             dgvDrops.DataSource = tblDrops
 
@@ -167,7 +193,7 @@ Public Class frmSortControl
     Private Sub GetCarriers()
         Try
 
-            tblCarriers = sp.GetCarriers(ConnectionString)
+            tblCarriers = sp.GetCarriers(Profile.p_ConnectionString)
 
             dgvCarriers.DataSource = tblCarriers
 
@@ -179,7 +205,7 @@ Public Class frmSortControl
     Private Sub GetActiveWave()
         Try
 
-            Dim ds As DataSet = sp.GetActiveWave(ConnectionString, "")
+            Dim ds As DataSet = sp.GetActiveWave(Profile.p_ConnectionString, "")
 
             tblWaveDetail = ds.Tables(1)
             tblWavelist = ds.Tables(0)
@@ -201,7 +227,7 @@ Public Class frmSortControl
 
         Try
 
-            sp.ActivateWave(ConnectionString, lstWaves.SelectedItem)
+            sp.ActivateWave(Profile.p_ConnectionString, lstWaves.SelectedItem)
 
             GetActiveWave()
 
@@ -211,14 +237,12 @@ Public Class frmSortControl
     End Sub
 
     Private Sub TmrRefresh_Tick(sender As Object, e As EventArgs) Handles tmrRefresh.Tick
-
         Me.Cursor = Cursors.WaitCursor
         GetPendingWaves()
         GetActiveWave()
         GetCarriers()
         GetDrops()
         GetMessagesFromGBI()
-        GetLoginfo()
         Me.Cursor = Cursors.Default
     End Sub
 
@@ -239,14 +263,14 @@ Public Class frmSortControl
 
         If e.KeyCode = Keys.Enter Then
 
-            Dim VerifyDs As DataSet = sp.VerifyBadge(ConnectionString, rtbBadge.Text)
+            Dim VerifyDs As DataSet = sp.VerifyBadge(Profile.p_ConnectionString, rtbBadge.Text)
 
             tblVerify = VerifyDs.Tables(0)
 
             Dim Status As String = tblVerify.Rows(0).Item("Status").ToString
 
             If Status = "Approved" Then
-                sp.AbortWave(ConnectionString, txtWaveNmbr.Text, "Abort", rtbBadge.Text)
+                sp.AbortWave(Profile.p_ConnectionString, txtWaveNmbr.Text, "Abort", rtbBadge.Text)
                 txtWaveNmbr.Clear()
                 txtOrders.Clear()
                 txtDestinations.Clear()
@@ -318,4 +342,5 @@ Public Class frmSortControl
     Private Sub btnRepick_Click(sender As Object, e As EventArgs) Handles btnRepick.Click
         createRepick()
     End Sub
+
 End Class

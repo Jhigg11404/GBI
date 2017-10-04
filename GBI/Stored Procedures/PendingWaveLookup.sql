@@ -76,9 +76,9 @@ begin
 	from 
 		[SRV-1LD2APIX01].apix2.dbo.subwaves sw
 	where
-		sw.[status] = 2
+		sw.[status] = 5
 	and 
-		sw.sorter = 10
+		sw.sorter = 7
 	ORDER BY 
 		sw.DateTimeSorted
 

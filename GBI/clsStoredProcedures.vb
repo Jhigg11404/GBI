@@ -104,12 +104,33 @@ Public Class clsStoredProcedures
 
     End Function
 
+    Public Function SocketConnectionInfo_GET(ByVal ConnectionString As String, ByVal SocketName As String, ByVal Mode As String) As DataTable
+
+        Dim params As New Dictionary(Of String, String)
+        params.Add("@SocketName", SocketName)
+        params.Add("@Mode", Mode)
+
+        SocketConnectionInfo_GET = GetDS(ConnectionString, "SocketConnectionInfo_GET", params).Tables(0)
+
+    End Function
+
     Public Sub ActivateWave(ByVal ConnectionString As String, ByVal WaveId As String)
 
         Dim params As New Dictionary(Of String, String)
         params.Add("@WaveId", WaveId)
 
         ExecSPROC(ConnectionString, "ActivateWave", params)
+
+    End Sub
+
+    Public Sub GBI_Packets_ADD(ByVal ConnectionString As String, ByVal Socket As String, ByVal SocketMessage As String, ByVal Reply As String)
+
+        Dim params As New Dictionary(Of String, String)
+        params.Add("@Socket", Socket)
+        params.Add("@SocketMessage", SocketMessage)
+        params.Add("@Reply", Reply)
+
+        ExecSPROC(ConnectionString, "GBI_Packets_ADD", params)
 
     End Sub
 
