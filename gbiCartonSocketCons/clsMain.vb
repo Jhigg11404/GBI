@@ -13,7 +13,7 @@ Public Class clsMain
         ep.MethodName = System.Reflection.MethodBase.GetCurrentMethod().Name
 
         'Instantiate Stored Procedures 
-        Dim sp As New GBI.clsStoredProcedures
+        Dim sp As New DataHandling.clsStoredProcedures
 
         'TODO: enable live/test mode switching; datasourse TESTSOCKET = test socket from PM; TESTTABLE = socket msg table in sdPack; SOPTABLE = SOP tables in sdPack; LIVE = live socket from PM
         With Profile

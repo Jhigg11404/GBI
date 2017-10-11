@@ -116,6 +116,10 @@
       <Project>{41924ac0-de55-491d-96d0-0092e109afbd}</Project>
       <Name>Common</Name>
     </ProjectReference>
+    <ProjectReference Include="..\DataHandling\DataHandling.vbproj">
+      <Project>{58403149-a836-456c-8f78-10db03bf3ff7}</Project>
+      <Name>DataHandling</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ErrorHandling\ErrorHandling.vbproj">
       <Project>{c5c85c55-4f02-4c5f-a59d-1a299cc6df2b}</Project>
       <Name>ErrorHandling</Name>

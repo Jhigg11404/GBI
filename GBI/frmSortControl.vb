@@ -4,7 +4,7 @@ Imports Common.clsCommon
 Public Class frmSortControl
 
     'Instantiate Stored Procedures 
-    Private sp As New clsStoredProcedures
+    Private sp As New DataHandling.clsStoredProcedures
 
     'Instantiate Profile object
     Dim Profile As Common.objProfile = New Common.objProfile

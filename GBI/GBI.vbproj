@@ -108,7 +108,6 @@
     <Import Include="System.Threading.Tasks" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="clsStoredProcedures.vb" />
     <Compile Include="frmMenu.vb">
       <SubType>Form</SubType>
     </Compile>
@@ -168,28 +167,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="ReadMe.txt" />
-    <Content Include="Static Data\Galaxy.sql" />
-    <Content Include="Stored Procedures\FillManualPart.sql" />
-    <Content Include="Stored Procedures\InsertProcessLog.sql" />
-    <Content Include="Stored Procedures\AssignCarton.sql" />
-    <Content Include="Stored Procedures\syErrorLog_ADD.sql" />
-    <Content Include="Stored Procedures\SocketConnectionInfo_GET.sql" />
-    <Content Include="Stored Procedures\GBI_Packets_ADD.sql" />
-    <Content Include="Stored Procedures\TestSocketMessageLookup.sql" />
-    <Content Include="Stored Procedures\VerifyBadge.sql" />
-    <Content Include="Stored Procedures\AbortWave.sql" />
-    <Content Include="Stored Procedures\GetActiveWave.sql" />
-    <Content Include="Stored Procedures\GetCarriers.sql" />
-    <Content Include="Stored Procedures\PendingWaveLookup.sql" />
-    <Content Include="Stored Procedures\ActivateWave.sql" />
-    <Content Include="Stored Procedures\CloseWave.sql" />
-    <Content Include="Stored Procedures\GetDropDetail.sql" />
-    <Content Include="Stored Procedures\SendRepick.sql" />
-    <Content Include="Stored Procedures\GetShortages.sql" />
-    <Content Include="Stored Procedures\AddLogInfo.sql" />
-    <Content Include="Stored Procedures\SQLServerConnection_GET.sql" />
-    <Content Include="Stored Procedures\GetLogInfo.sql" />
-    <Content Include="Stored Procedures\GetMessagesFromGBI.sql" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5.2">
@@ -207,6 +184,10 @@
     <ProjectReference Include="..\Common\Common.vbproj">
       <Project>{41924ac0-de55-491d-96d0-0092e109afbd}</Project>
       <Name>Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DataHandling\DataHandling.vbproj">
+      <Project>{58403149-a836-456c-8f78-10db03bf3ff7}</Project>
+      <Name>DataHandling</Name>
     </ProjectReference>
     <ProjectReference Include="..\ErrorHandling\ErrorHandling.vbproj">
       <Project>{c5c85c55-4f02-4c5f-a59d-1a299cc6df2b}</Project>
