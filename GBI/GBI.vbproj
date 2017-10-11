@@ -25,7 +25,7 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>true</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <MinimumRequiredVersion>1.0.0.1</MinimumRequiredVersion>
+    <MinimumRequiredVersion>1.0.0.2</MinimumRequiredVersion>
     <ApplicationRevision>2</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
@@ -108,7 +108,6 @@
     <Import Include="System.Threading.Tasks" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="clsErrorHandler.vb" />
     <Compile Include="clsStoredProcedures.vb" />
     <Compile Include="frmMenu.vb">
       <SubType>Form</SubType>
@@ -170,11 +169,13 @@
   <ItemGroup>
     <Content Include="ReadMe.txt" />
     <Content Include="Static Data\Galaxy.sql" />
+    <Content Include="Stored Procedures\FillManualPart.sql" />
     <Content Include="Stored Procedures\InsertProcessLog.sql" />
     <Content Include="Stored Procedures\AssignCarton.sql" />
     <Content Include="Stored Procedures\syErrorLog_ADD.sql" />
     <Content Include="Stored Procedures\SocketConnectionInfo_GET.sql" />
     <Content Include="Stored Procedures\GBI_Packets_ADD.sql" />
+    <Content Include="Stored Procedures\TestSocketMessageLookup.sql" />
     <Content Include="Stored Procedures\VerifyBadge.sql" />
     <Content Include="Stored Procedures\AbortWave.sql" />
     <Content Include="Stored Procedures\GetActiveWave.sql" />

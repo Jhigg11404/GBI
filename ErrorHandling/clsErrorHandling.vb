@@ -57,7 +57,7 @@ Public Class clsErrorHandler
             Dim cn As SqlConnection
             Dim cmd As New SqlCommand
             Dim par As SqlParameter
-            cn = New SqlConnection("Server=SRV-1LD2APIX01;Database=WAREHOUSE;User Id= apixdata;PWD=dorner")
+            cn = New SqlConnection("Server=SRV-1LD2APIX01;Database=WAREHOUSE;User Id=apixdata;PWD=dorner")
 
             Try
                 cn.Open()
@@ -101,6 +101,8 @@ Public Class clsErrorHandler
                     par.Value = kvp.Value.Trim
                     cmd.Parameters.Add(par)
                 Next kvp
+
+                cmd.ExecuteNonQuery()
 
 #If DEBUG Then
 

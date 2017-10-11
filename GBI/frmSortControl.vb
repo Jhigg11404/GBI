@@ -21,6 +21,7 @@ Public Class frmSortControl
     Private tblCarriers As DataTable
     Private tblShortages As DataTable
     Private tblVerify As DataTable
+    Private tblManual As DataTable
 
     'Badge Controls
 
@@ -114,6 +115,15 @@ Public Class frmSortControl
             End Try
         End If
 
+        If TabControl1.SelectedTab.ToString = "TabPage: {Manual Station}" Then
+            Try
+                txtManWaveNmbr.Enabled = False
+                GetManPendingWaves()
+            Catch ex As Exception
+                eh._Err(Profile, "GetPendingWaves", ex.Message, ex, NoDisplay, NotifyIT, LogIt)
+            End Try
+        End If
+
     End Sub
 
     Private Sub GetPendingWaves()
@@ -127,6 +137,21 @@ Public Class frmSortControl
 
         While rowCount > i
             lstWaves.Items.Add(tblWavelist.Rows(i).Item("WaveId").ToString())
+            i = i + 1
+        End While
+    End Sub
+
+    Private Sub GetManPendingWaves()
+        Dim i As Int16 = 0
+        Dim rowCount As Int16 = 0
+        lstManWaves.Items.Clear()
+
+        tblWavelist = sp.PendingWaveLookup(Profile.p_ConnectionString)
+
+        rowCount = tblWavelist.Rows.Count()
+
+        While rowCount > i
+            lstManWaves.Items.Add(tblWavelist.Rows(i).Item("WaveId").ToString())
             i = i + 1
         End While
     End Sub
@@ -343,4 +368,70 @@ Public Class frmSortControl
         createRepick()
     End Sub
 
+    Private Sub btnManOpenWave_Click(sender As Object, e As EventArgs) Handles btnManOpenWave.Click
+
+        txtManWaveNmbr.Text = lstManWaves.SelectedItem
+        lstManWaves.Enabled = False
+        rtbBarcode.Focus()
+    End Sub
+
+    Private Sub BtnManCloseWave_Click(sender As Object, e As EventArgs) Handles BtnManCloseWave.Click
+
+        lstManWaves.Enabled = True
+        txtManWaveNmbr.Clear()
+
+    End Sub
+
+    Private Sub OnKeyDown(ByVal sender As Object, ByVal e As KeyEventArgs) Handles rtbBarcode.KeyDown
+
+        If e.KeyCode = Keys.Enter Then
+
+            tblManual = sp.FillManualPart(Profile.p_ConnectionString, rtbBarcode.Text)
+
+            dgvManual.DataSource = tblManual
+            PrintManualLabel()
+            rtbBarcode.Clear()
+        End If
+
+    End Sub
+
+
+    Private Sub PrintManualLabel()
+        Dim IpAddress As String
+        Dim port As Integer
+        Dim zplstring As String
+
+        Dim WaveNmbr As String
+        Dim DropLocation As String
+        Dim Barcode As String
+        Dim OrdNmbr As String
+
+        IpAddress = "10.10.211.69"
+        port = 9100
+
+        WaveNmbr = tblManual.Rows(0).Item("WaveID").ToString()
+        DropLocation = tblManual.Rows(0).Item("DropLocation").ToString()
+        OrdNmbr = tblManual.Rows(0).Item("OrderID").ToString()
+        Barcode = tblManual.Rows(0).Item("UPC").ToString()
+
+        zplstring =
+            "^XA" &
+            "^FO30,30^ADN,36,10^FDWave# " & WaveNmbr & "^FS" &
+            "^FO30,60^ADN,36,10^FDBarcode# " & Barcode & "^FS" &
+            "^FO30,90^ADN,36,10^FDOrder# " & OrdNmbr & "^FS" &
+            "^FO30,120^ADN,36,10^FDDrop# " & DropLocation & "^FS" &
+            "^XZ"
+        'Open Connection
+        Dim client As New System.Net.Sockets.TcpClient
+        client.Connect(IpAddress, port)
+
+        'Write ZPL String to Connection
+        Dim writer As New System.IO.StreamWriter(client.GetStream())
+            writer.Write(zplstring)
+            writer.Flush()
+
+            'Close Connection
+            writer.Close()
+        client.Close()
+    End Sub
 End Class

@@ -19,6 +19,18 @@ Public Class clsStoredProcedures
 
     End Function
 
+    Public Function TestSocketMessageLookup(ByVal ConnectionString As String, ByVal Method As String, ByVal Status As String) As DataTable
+        'Returns ConnectionString to SQL Server. Mode = "TEST" returns connection string to test server; "LIVE" -- production.
+        'Hard-code to always use production DB to get this info
+
+        Dim params As New Dictionary(Of String, String)
+        params.Add("@Method", Method)
+        params.Add("@Status", Status)
+
+        TestSocketMessageLookup = GetDS(ConnectionString, "TestSocketMessageLookup", params).Tables(0)
+
+    End Function
+
     Public Function AbortWave(ByVal ConnectionString As String, ByVal Waveid As String, ByVal AbortType As String, ByVal BadgeId As String) As DataSet
 
         Dim params As New Dictionary(Of String, String)
@@ -123,16 +135,25 @@ Public Class clsStoredProcedures
 
     End Sub
 
-    Public Sub GBI_Packets_ADD(ByVal ConnectionString As String, ByVal Socket As String, ByVal SocketMessage As String, ByVal Reply As String)
+    Public Function GBI_Packets_ADD(ByVal ConnectionString As String, ByVal Socket As String, ByVal SocketMessage As String, ByVal Reply As String) As DataTable
 
         Dim params As New Dictionary(Of String, String)
         params.Add("@Socket", Socket)
         params.Add("@SocketMessage", SocketMessage)
         params.Add("@Reply", Reply)
 
-        ExecSPROC(ConnectionString, "GBI_Packets_ADD", params)
+        GBI_Packets_ADD = GetDS(ConnectionString, "GBI_Packets_ADD", params).Tables(0)
 
-    End Sub
+    End Function
+
+    Public Function FillManualPart(ByVal ConnectionString As String, ByVal Barcode As String) As DataTable
+
+        Dim params As New Dictionary(Of String, String)
+        params.Add("@Barcode", Barcode)
+
+        FillManualPart = GetDS(ConnectionString, "FillManualPart", params).Tables(0)
+
+    End Function
 
 
 #End Region

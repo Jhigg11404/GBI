@@ -49,6 +49,7 @@ declare
 		(
 			WaveId varchar(8),
 			OrderId varchar(10),
+			Sku varchar(12),
 			Barcode varchar(15),
 			DropLocation smallint,
 			QtyRequired smallint
@@ -88,6 +89,7 @@ begin
 		(
 			WaveId,
 			OrderId,
+			sku,
 			Barcode,
 			DropLocation,
 			QtyRequired
@@ -95,6 +97,7 @@ begin
 		Select 
 			ord.waveid,
 			ord.orderid,
+			dtl.ProductID,
 			dtl.verifybcr,
 			ord.ActiveDest + 2,
 			dtl.QtyRequired
@@ -173,7 +176,7 @@ Select
 	'A',
 	wve.WaveId,
 	wve.Barcode,
-	wve.Barcode,
+	wve.sku,
 	'',
 	wve.DropLocation,
 	wve.Orderid,

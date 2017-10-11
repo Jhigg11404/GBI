@@ -20,6 +20,7 @@ Public Class clsGetBox
 
     'Data tables
     Private tblSocket As DataTable
+    Private tblReply As DataTable
 
 #Region "Properties"
 
@@ -35,11 +36,6 @@ Public Class clsGetBox
         ep.MethodName = System.Reflection.MethodBase.GetCurrentMethod().Name
 
         ' Incoming data from the client.
-        Dim PacketStr As String
-        Dim PacketID As String = ""
-        Dim PacketMsg As String = ""
-        Dim PacketFailed As Boolean
-        Dim PacketStatusCode As Integer
         Dim SocketName As String = Profile.p_AppName
         Dim Mode As String = Profile.p_AppMode
 
@@ -47,7 +43,9 @@ Public Class clsGetBox
         Dim HandlerSocket As Socket
 
         ' Data buffer for incoming data.
-        Dim bytes() As Byte = New [Byte](1024) {}
+        'Dim bytes() As Byte = New [Byte](1024) {}
+
+        Console.WriteLine("Getting Socket connection info...")
 
         tblSocket = sp.SocketConnectionInfo_GET(Profile.p_ConnectionString, SocketName, Mode)
 
@@ -59,6 +57,7 @@ Public Class clsGetBox
         ' Establish the local endpoint for the socket.
         Dim ipAddress As IPAddress = IPAddress.Parse(ipAddr)
         Dim localEndPoint As New IPEndPoint(ipAddress, epPort)
+
 
         Dim bytesRec As Integer
         Dim msg As Byte()
@@ -74,20 +73,25 @@ Public Class clsGetBox
             ListenerSocket.Listen(10)
             ListenerSocket.ReceiveTimeout = tmTimeOut
 
-            'Start listening for connections. Program is suspended while waiting for an incoming connection.
-            Console.WriteLine("Waiting for a connection...")
-            HandlerSocket = ListenerSocket.Accept
-
             While True
 
-                PacketStr = Nothing
+                Dim PacketStr As String = ""
+                Dim PacketID As String = ""
+                Dim PacketMsg As String = ""
+                Dim PacketFailed As Boolean = False
+                Dim PacketStatusCode As Integer = 10
 
                 Try
+                    'Start listening for connections. Program is suspended while waiting for an incoming connection.
+                    Console.WriteLine("Waiting for a connection...")
+                    HandlerSocket = ListenerSocket.Accept
+
 
                     ' An incoming connection needs to be processed.
                     While True
 
-                        bytes = New Byte(1024) {}
+                        'bytes = New Byte(1024) {}
+                        Dim bytes(HandlerSocket.ReceiveBufferSize) As Byte
                         bytesRec = HandlerSocket.Receive(bytes)
 
                         ' check if anything being sent 
@@ -97,7 +101,9 @@ Public Class clsGetBox
                             Else
                                 'Break and restart after 10 seconds of inactivity
                                 If DateDiff("s", dtStart, Date.Now) > 10 Then
+                                    Console.WriteLine("Going to sleep...")
                                     ListenerSocket.Dispose()
+                                    GoTo Sleep
                                     Exit Sub
                                 End If
                             End If
@@ -106,14 +112,24 @@ Public Class clsGetBox
                                 dtStart = Nothing
                             End If
                         End If
+                        Console.WriteLine("Connection established...")
 
                         PacketStr += Encoding.ASCII.GetString(bytes, 0, bytesRec)
+
+                        If PacketStr = Nothing Then
+                            Console.WriteLine("Going to sleep...")
+                            GoTo Sleep
+                        End If
+
+                        PacketID = Trim(PacketStr.Substring(4, 10))
+
+                        Console.WriteLine("Message Recieved: " + PacketStr)
 
                         'STX character received
                         If PacketStr.Contains("695") = True Then Exit While
 
                         If PacketFailed = True Then Exit While
-
+Sleep:
                     End While
 
                 Catch ee As SocketException
@@ -131,31 +147,36 @@ Public Class clsGetBox
 
                 End Try
 
+                Console.WriteLine("Packet Failed: " + CType(PacketFailed, String))
                 If PacketFailed = True Then
                     ' Prep return packet message'
-                    PacketMsg = Chr(2) & PacketID & "NAK" & "00001NO <ETX> " & Chr(3)
+                    PacketMsg = Chr(2) & PacketID & "NAK"
                 Else
                     ' Prep return packet message'
-                    PacketMsg = Chr(2) & PacketID & "ACK" & "00000" & Chr(3)
+                    PacketMsg = Chr(2) & PacketID & "ACK"
                 End If
+
+                PacketStatusCode = 10
+                If PacketFailed Then PacketStatusCode = 0
+
+                PacketStr = Trim(PacketStr.Substring(1, 36))
+
+                tblReply = sp.GBI_Packets_ADD(Profile.p_ConnectionString, "AssignBox", PacketStr, PacketMsg)
+
+                Dim Orderid As String = tblReply.Rows(0).Item("OrderID").ToString()
+
+                PacketMsg = PacketMsg & Orderid & Chr(3)
+
+                Console.WriteLine("Message Returned: " + PacketMsg)
 
                 ' Echo the data back to the client.
                 msg = Encoding.ASCII.GetBytes(PacketMsg)
                 HandlerSocket.Send(msg)
 
-                PacketStatusCode = 10
-                If PacketFailed Then PacketStatusCode = 0
-                sp.GBI_Packets_ADD(Profile.p_ConnectionString, "AssignBox", PacketStr, CType(PacketStatusCode, String))
-
-                ' Process Packet if successful
-                If PacketFailed = False Then
-                End If
-
             End While
 
         Catch ex As Exception 'SocketException
-            ' Log 
-            eh._Err(Profile, "GetPackets in clsGetBpx", ex.Message, ex, NoDisplay, NotifyIT, LogIt)
+            eh._Err(Profile, "GetPackets in clsGetBox", ex.Message, ex, NoDisplay, NotifyIT, LogIt)
         End Try
     End Sub
 

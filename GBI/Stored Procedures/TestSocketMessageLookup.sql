@@ -1,24 +1,24 @@
 ﻿USE [Galaxy]
 GO
-IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = object_id (N'[dbo].[AssignCarton]') AND Type = 'P') 
-DROP Procedure dbo.AssignCarton
+IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = object_id (N'[dbo].[TestSocketMessageLookup]') AND type = 'P') 
+DROP Procedure dbo.TestSocketMessageLookup
 GO
 
-/****** Object:  StoredProcedure [GBI].[AssignCarton]    Script Date: 9/9/2017 2:14:50 PM ******/
+/****** Object:  StoredProcedure [dbo].[TestSocketMessageLookup]    Script Date: 9/9/2017 2:14:50 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-Create procedure [dbo].[AssignCarton]
-@CartonId varchar(30),
-@DropLocation varchar(3)
+Create procedure [dbo].[TestSocketMessageLookup]
+@Method varchar(15),
+@Status Tinyint
 as
 /*
 ===============================================================================
 	File: 
-	Name: SendRepick
+	Name: TestSocketMessageLookup
 	Desc: AENT - GBI
-		Build repick dataset for the GBI sorter
+		Verifies badge number
 	Auth: Higginbotham, Joshua
 	Called by:   
              
@@ -45,22 +45,37 @@ declare
 	-- other work variables
 	
 	
+--Log Info
+DECLARE @DateTime DATETIME,
+        @Now DATETIME,
+        @Process VARCHAR(50),
+        @Message VARCHAR(250),
+        @Msg VARCHAR(250),
+        @Count TINYINT
+
 
 -- initialise
-set @return_status = 0
+SET @return_status = 0;
+SET @Process = 'Proc = TestSocketMessageLookup';
+SET @Now = GETDATE();
 
 /*
 ===============================================================================
 
 ===============================================================================
 */
-begin 
 
-	Update galaxy.dbo.ProductDistribution
-	Set CartonID = @CartonId
-	,status = 'N'
-	Where DropLocation = @DropLocation
+Begin
 
-end 
+	Select 
+		TranId,
+		SocketMessage
+	from Galaxy.dbo.Test_SocketQueue
+	where Socket = @Method
+	and SocketStatus = @Status
+
+End
+
+ 
 
 

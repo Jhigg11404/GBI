@@ -58,7 +58,10 @@ DECLARE @DateTime DATETIME,
 --Work Variables
 Declare
 	@CartonId varchar(30),
-	@DropLocation varchar(3)
+	@DropLocation varchar(3),
+	@TransId varchar(15),
+	@OrderID varchar(20),
+	@DropStatus varchar(1)
 
 
 -- initialise
@@ -68,6 +71,9 @@ SET @Now = GETDATE();
 SET @Status = '';
 Set @CartonId = '';
 Set @DropLocation = '';
+Set @TransId = '';
+Set @OrderID = '';
+Set @DropStatus = '';
 
 /*
 ===============================================================================
@@ -77,29 +83,10 @@ Set @DropLocation = '';
 
 Begin
 
-    SET @Msg = 'Inserting record into Socket Log ';
-	Exec Galaxy.dbo.AddLogInfo @DateTime = @Now, @Process = @Process, @Message = @Msg
-
-	Insert into Galaxy.dbo.Control_socketLog
-	(SocketDate
-	,Socket
-	,SocketMessage
-	,Reply
-	,Status
-	)
-	Values
-	(
-	getdate()
-	,@Socket
-	,@SocketMessage
-	,@Reply
-	,10
-	)
-
 	If @Socket = 'AssignBox'
 	Begin
 		--Parse the socket message to get info needed to assign the box.
-		select @CartonID = SUBSTRING(@socketMessage, 4,20), @DropLocation = SUBSTRING(@SocketMessage, 24,3)
+		select @Transid = Substring (@SocketMessage, 4, 10), @CartonID = SUBSTRING(@socketMessage, 14,20), @DropLocation = SUBSTRING(@SocketMessage, 34,3)
 		--Insert the carton into the table for Operations
 		Exec Galaxy.dbo.AssignCarton @CartonId, @DropLocation
 
@@ -107,8 +94,28 @@ Begin
 		Set Status = 90
 		where SocketMessage = @SocketMessage
 
-	End
+Insert into Galaxy.dbo.Control_socketLog
+	(SocketDate
+	,Socket
+	,TransId
+	,SocketMessage
+	,Reply
+	,Status
+	)
+Values
+	(
+	getdate()
+	,@Socket
+	,@TransId
+	,@SocketMessage
+	,@Reply
+	,10
+	)
 
+	  SELECT distinct OrderID, [Status]
+	  FROM [Galaxy].[dbo].[ProductDistribution]
+      where droplocation = @DropLocation
+	 End
 End
 
  
