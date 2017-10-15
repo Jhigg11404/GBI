@@ -123,6 +123,8 @@
     <Content Include="Stored Procedures\syErrorLog_ADD.sql" />
     <Content Include="Stored Procedures\TestSocketMessageLookup.sql" />
     <Content Include="Stored Procedures\VerifyBadge.sql" />
+    <Content Include="Tables\ProductDistribution.sql" />
+    <Content Include="Tables\Sort_Info.sql" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

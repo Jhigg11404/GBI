@@ -30,6 +30,7 @@ ALTER PROCEDURE [dbo].[OrderClose_BuildShipInfoPackets]
 ===============================================================================
 CREATE TABLE Galaxy.dbo.SendToPKMS_Packets(
 	PacketID bigint IDENTITY(1, 1) NOT NULL,
+	PacketHeader varchar(2) not null,
 	PickTckt char(10) NOT NULL,
 	WaveNmbr char(10) NOT NULL,
 	PacketStatusCode tinyint NOT NULL,  --0 = new (unsent), 10=resend, 20=failed, 30=OK, done
@@ -37,9 +38,8 @@ CREATE TABLE Galaxy.dbo.SendToPKMS_Packets(
 	LastDateSent datetime2(2) NOT NULL,
 	PacketStr varchar(max) NOT NULL,
 	InsertDate datetime2(2) NOT NULL,
-	CONSTRAINT PK_SendToPM_Packets PRIMARY KEY CLUSTERED (PacketID ASC)
+	CONSTRAINT PK_SendToPM_Packets PRIMARY KEY CLUSTERED (Picktckt, PacketHeader)
 )
-ALTER TABLE GRS.dbo.SendToPM_Packets ADD DEFAULT (getdate()) FOR Insertdate
 
 ******************************************************************************************/
 
@@ -109,7 +109,7 @@ BEGIN TRY
 --==============================================================================================
 	
 	--Get all completed PickTickets
-	insert #PickTickets select OrderID, Status from Galaxy.dbo.ProductDistribution where Status = 'C' -- Complete
+	insert #PickTickets select OrderID, Status from Galaxy.dbo.Sort_info where Status = 'C' -- Complete
 	select @PickTicketsMax = max(RowID) from #PickTickets
 	if isNull(@PickTicketsMax,0) = 0 begin
 		goto xIT
@@ -143,7 +143,7 @@ BEGIN TRY
 			1, 
 			1, 
 			@NbrOfDtls
-		from Galaxy.dbo.ProductDistribution 
+		from Galaxy.dbo.Sort_info 
 		where OrderId = @PickTckt 
 		select @ShipInfoMax = max(RowID) from #ShipInfo
 		if isNull(@ShipInfoMax,0) = 0 begin
