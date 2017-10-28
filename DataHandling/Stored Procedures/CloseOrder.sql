@@ -4,25 +4,26 @@ IF EXISTS
 (
     SELECT *
     FROM dbo.sysobjects
-    WHERE id = OBJECT_ID(N'[dbo].[GetShortages]')
+    WHERE id = OBJECT_ID(N'[dbo].[CloseOrder]')
           AND type = 'P'
 )
-    DROP PROCEDURE dbo.GetShortages;
+    DROP PROCEDURE dbo.CloseOrder;
 GO
 
-/****** Object:  StoredProcedure [dbo].[GetShortages]    Script Date: 9/9/2017 2:14:50 PM ******/
+/****** Object:  StoredProcedure [GBI].[CloseOrder]    Script Date: 9/9/2017 2:14:50 PM ******/
 SET ANSI_NULLS ON;
 GO
 SET QUOTED_IDENTIFIER ON;
 GO
-CREATE PROCEDURE [dbo].[GetShortages]
+CREATE PROCEDURE [dbo].[CloseOrder]
+@OrderId VARCHAR(25)
 AS
 /*
 ===============================================================================
 	File: 
-	Name: GetShortages
+	Name: CloseWave
 	Desc: AENT - GBI
-		Returns shortages for waves for the GBI sorter
+		Closes an active wave on the sorter
 	Auth: Higginbotham, Joshua
 	Called by:   
              
@@ -47,6 +48,7 @@ DECLARE @error_severity INT,
         @return_status SMALLINT;
 -- other work variables
 
+
 --Log Info
 DECLARE @DateTime DATETIME,
         @Now DATETIME,
@@ -58,7 +60,7 @@ DECLARE @DateTime DATETIME,
 
 -- initialise
 SET @return_status = 0;
-SET @Process = 'Proc = GetShortages';
+SET @Process = 'Proc = GetLogInfo';
 SET @Now = GETDATE();
 
 /*
@@ -68,23 +70,16 @@ SET @Now = GETDATE();
 */
 BEGIN
 
-    SET @Msg = 'Getting shortage Info from the Database';
-    EXEC Galaxy.dbo.AddLogInfo @DateTime = @Now,
-                               @Process = @Process,
-                               @Message = @Msg;
+	UPDATE Galaxy.dbo.Sort_Info
+	SET OrderClosed = 1
+	WHERE OrderId = @Orderid
+	
+	IF @@ROWCOUNT <> 0
+	BEGIN
+		SET @return_status = 1
+	END
 
-    SELECT [WaveID],
-           [UPC],
-           [sku],
-           [DropLocation],
-           [OrderID],
-           [QtyRequired],
-           [ConfirmedDrops],
-           [QtyRemaining]
-    FROM [Galaxy].[dbo].[ProductDistribution]
-    WHERE QtyRemaining > 0
-          AND status <> 'F'
-    ORDER BY DropLocation;
+	SELECT @return_status AS 'Status'
 
 END;
 

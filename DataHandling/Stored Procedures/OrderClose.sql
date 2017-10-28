@@ -1,14 +1,14 @@
-﻿USE [GRS]
+﻿USE [GRS];
 GO
-/****** Object:  StoredProcedure [dbo].[OrderClose_BuildShipInfoPackets]    Script Date: 10/10/2017 4:26:49 PM ******/
-SET ANSI_NULLS ON
+/****** Object:  StoredProcedure [dbo].[OrderClose]    Script Date: 10/10/2017 4:26:49 PM ******/
+SET ANSI_NULLS ON;
 GO
-SET QUOTED_IDENTIFIER ON
+SET QUOTED_IDENTIFIER ON;
 GO
 
-ALTER PROCEDURE [dbo].[OrderClose_BuildShipInfoPackets]
+ALTER PROCEDURE [dbo].[OrderClose]
 /*******************************************************************************************
-	Name:		OrderClose_BuildSortInfoPackets
+	Name:		OrderClose
 	
 	Desc:		For all completed PickTickets, creates Dhcart info packets for transmission to PKMS.
 
@@ -28,260 +28,297 @@ ALTER PROCEDURE [dbo].[OrderClose_BuildShipInfoPackets]
 ===============================================================================
 	Tables and Notes
 ===============================================================================
-CREATE TABLE Galaxy.dbo.SendToPKMS_Packets(
-	PacketID bigint IDENTITY(1, 1) NOT NULL,
-	PacketHeader varchar(2) not null,
-	PickTckt char(10) NOT NULL,
-	WaveNmbr char(10) NOT NULL,
-	PacketStatusCode tinyint NOT NULL,  --0 = new (unsent), 10=resend, 20=failed, 30=OK, done
-	LastResponse varchar(max) NOT NULL,
-	LastDateSent datetime2(2) NOT NULL,
-	PacketStr varchar(max) NOT NULL,
-	InsertDate datetime2(2) NOT NULL,
-	CONSTRAINT PK_SendToPM_Packets PRIMARY KEY CLUSTERED (Picktckt, PacketHeader)
-)
 
 ******************************************************************************************/
 
 AS
-
-SET NOCOUNT ON
+SET NOCOUNT ON;
 
 --==============================================================================================
 --DECLARE/INIT LOCAL VARS
 --==============================================================================================
-declare @PickTckt char(20), @PickTcktStatusCode char(1), @PickTicketsMax int, @x int = 1
-create table #PickTickets (PickTckt char(20), PickTcktStatusCode char(1), RowID int IDENTITY(1,1))
+DECLARE @PickTckt CHAR(20),
+        @PickTcktStatusCode CHAR(1),
+        @PickTicketsMax INT,
+        @x INT = 1;
 
-declare @PacketID bigint, @ShipInfoMax int, @ShipInfo_ItemMax int, @i int = 1, @j int = 1
-create table #CartonHeader (
-	RowID int IDENTITY(1,1),
-	PickTckt char(20),
-	BoxID char(20),
-	BoxType char(20),
-	WorkStation char(3),
-	Filler1 char(6),
-	Filler2 char(8),
-	NumOfBoxes tinyint,
-	LastBox bit,
-	NbrOfDtls tinyint
-)
+DECLARE @PacketID BIGINT,
+        @ShipInfoMax INT,
+        @ShipInfo_ItemMax INT,
+        @i INT = 1,
+        @j INT = 1;
 
-create table #CartonDetail (
-	RowID tinyint IDENTITY(1,1),
-	Sku char(20),
-	QtyPacked tinyint
-)
+DECLARE @PacketStr VARCHAR(MAX) 
+DECLARE @PacketIDStr CHAR(10);
 
-create table #OrderComplete (
-    RowID int IDENTITY(1,1),
-	Filler1 char(1),
-	Picktckt char(20),
-	PicktcktStat tinyint,
-	Workstation char(3),
-	Filler2 char(6),
-	Filler3 char(8),
-	NbrOfBoxes tinyint
-)
+DECLARE @Picktckt CHAR(20),
+        @BoxId CHAR(20),
+        @BoxType CHAR(20),
+        @WorkStation CHAR(3),
+        @NumOfBoxes TINYINT,
+        @LastBox BIT,
+        @NbrOfDtls TINYINT,
+        @Sku CHAR(20),
+        @QtyPacked TINYINT,
+        @PicktcktStat TINYINT,
+        @NbrOfBoxes TINYINT;
 
-declare @PacketStr varchar(max) = ''
-declare @PacketIDStr char(10)
+CREATE TABLE #PickTickets
+(
+    PickTckt CHAR(20),
+    PickTcktStatusCode CHAR(1),
+    RowID INT IDENTITY(1, 1)
+);
 
-declare
-	@Picktckt char(20),
-	@BoxId Char(20),
-	@BoxType char(20),
-	@WorkStation char(3),
-	@NumOfBoxes tinyint,
-	@LastBox bit,
-	@NbrOfDtls tinyint,
-	@Sku char(20),
-	@QtyPacked tinyint,
-	@PicktcktStat tinyint,
-	@NbrOfBoxes tinyint
+CREATE TABLE #CartonHeader
+(
+    RowID INT IDENTITY(1, 1),
+    PickTckt CHAR(20),
+    BoxID CHAR(20),
+    BoxType CHAR(20),
+    WorkStation CHAR(3),
+    Filler1 CHAR(6),
+    Filler2 CHAR(8),
+    NumOfBoxes TINYINT,
+    LastBox BIT,
+    NbrOfDtls TINYINT
+);
+
+CREATE TABLE #CartonDetail
+(
+    RowID TINYINT IDENTITY(1, 1),
+    Sku CHAR(20),
+    QtyPacked TINYINT
+);
+
+CREATE TABLE #OrderComplete
+(
+    RowID INT IDENTITY(1, 1),
+    Filler1 CHAR(1),
+    Picktckt CHAR(20),
+    PicktcktStat TINYINT,
+    Workstation CHAR(3),
+    Filler2 CHAR(6),
+    Filler3 CHAR(8),
+    NbrOfBoxes TINYINT
+);
 
 --==============================================================================================
 --BEGIN PROCESSING
 --==============================================================================================
-BEGIN TRY
+
 --==============================================================================================
 --
 --==============================================================================================
-	
-	--Get all completed PickTickets
-	insert #PickTickets select OrderID, Status from Galaxy.dbo.Sort_info where Status = 'C' -- Complete
-	select @PickTicketsMax = max(RowID) from #PickTickets
-	if isNull(@PickTicketsMax,0) = 0 begin
-		goto xIT
-	end
 
-	set @x = 1
-	--PickTicket loop
-	while @x <= @PickTicketsMax begin
-		
-		select @PickTckt = PickTckt, @PickTcktStatusCode = PickTcktStatusCode from #PickTickets where RowID = @x
+--Get all completed PickTickets
+INSERT #PickTickets
+SELECT DISTINCT OrderID,
+       Status
+FROM Galaxy.dbo.Sort_info
+WHERE Status = 'C'; -- Complete
+SELECT @PickTicketsMax = MAX(RowID)
+FROM #PickTickets;
+IF ISNULL(@PickTicketsMax, 0) = 0
+BEGIN
+    GOTO xIT;
+END;
 
-		if @PickTcktStatusCode = 'C' begin
+SET @x = 1;
+--PickTicket loop
+WHILE @x <= @PickTicketsMax
+BEGIN
 
-		truncate table #CartonHeader
-		--Get ShipInfo data for all orders in PickTckt. If none found, error.
-		Select @NbrOfDtls = Count(Sku) from galaxy.dbo.ProductDistribution where orderid = @Picktckt
-		insert #CartonHeader(
-			PickTckt ,
-			BoxID ,
-			BoxType ,
-			WorkStation ,
-			Filler1 ,
-			Filler2 ,
-			NumOfBoxes ,
-			LastBox ,
-			NbrOfDtls )
-		select 
-			OrderId, CartonID, 'TOT', 'GBI', 
-			'      ',--6
-			'        ',--8
-			1, 
-			1, 
-			@NbrOfDtls
-		from Galaxy.dbo.Sort_info 
-		where OrderId = @PickTckt 
-		select @ShipInfoMax = max(RowID) from #ShipInfo
-		if isNull(@ShipInfoMax,0) = 0 begin
-			set @e = 'No ShipInfo record for PickTckt ' + @PickTckt
-			;THROW 99999, @e, 0  
-		end
+    SELECT @Picktckt = PickTckt,
+           @PickTcktStatusCode = PickTcktStatusCode
+    FROM #PickTickets
+    WHERE RowID = @x;
 
-		--for each ShipInfo record, make sure there is at least one ShipInfo_Item record
-		while @i <= @ShipInfoMax begin
-			select @Picktckt = Picktckt from #OrderHeader where RowID = @i
-			Select @ShipInfo_ItemMax = count(*) from GRS..ShipInfo_Item where ShipNmbr = @ShipNmbr
-			if isNull(@ShipInfo_ItemMax,0) = 0 begin
-				set @e = 'No ShipInfo_Item record for ShipNmbr ' + @ShipNmbr
-				;THROW 99999, @e, 0  
-			end
-			set @i = @i + 1
-		end
+    IF @PickTcktStatusCode = 'C'
+    BEGIN
 
-		--Insert Packet record stub (establishes PacketID)
-		insert ShipInfo_Packets(PickTckt,WaveNmbr,Warehouse,PacketStatusCode, LastResponse, LastDateSent, PacketStr)
-		select @PickTckt,'','',0,'','1900-01-01','' --PacketStatusCode = 0 (UNPREPPED)
-		select @PacketID = Scope_identity()	
+        --Get ShipInfo data for all orders in PickTckt. If none found, error.
+        SELECT @NbrOfDtls = COUNT(Sku)
+        FROM galaxy.dbo.ProductDistribution
+        WHERE orderid = @Picktckt;
+        INSERT #CartonHeader
+        (
+            PickTckt,
+            BoxID,
+            BoxType,
+            WorkStation,
+            Filler1,
+            Filler2,
+            NumOfBoxes,
+            LastBox,
+            NbrOfDtls
+        )
+        SELECT OrderId,
+               CartonID,
+               'TOT',
+               'GBI',
+               '      ',   --6
+               '        ', --8
+               1,
+               1,
+               @NbrOfDtls
+        FROM Galaxy.dbo.Sort_info
+        WHERE OrderId = @Picktckt;
+        SELECT @ShipInfoMax = MAX(RowID)
+        FROM #ShipInfo;
 
-		--==============================================================================================
-		-- BUILD PACKET STRING
-		--==============================================================================================
-		--Padded PacketID string
-		set @PacketIDStr = RIGHT('0000000000' + rtrim(@PacketID),10)
+        --Insert Packet record stub (establishes PacketID)
+        INSERT ShipInfo_Packets
+        (
+            PickTckt,
+            WaveNmbr,
+            Warehouse,
+            PacketStatusCode,
+            LastResponse,
+            LastDateSent,
+            PacketStr
+        )
+        SELECT @Picktckt,
+               '',
+               '',
+               0,
+               '',
+               '1900-01-01',
+               ''; --PacketStatusCode = 0 (UNPREPPED)
+        SELECT @PacketID = SCOPE_IDENTITY();
 
-		--Packet header
-		set @PacketStr = CHAR(2) + @PacketIDStr + CHAR(9) + 'H' + CHAR(9) + '' + CHAR(30)
+        --==============================================================================================
+        -- BUILD PACKET STRING
+        --==============================================================================================
+        --Padded PacketID string
+        SET @PacketIDStr = RIGHT('0000000000' + RTRIM(@PacketID), 10);
 
-		set @i = 1
+        --Packet header
+        SET @PacketStr = CHAR(2) + @PacketIDStr + CHAR(9) + 'H' + CHAR(9) + '' + CHAR(30);
 
-		--ShipInfo loop
-		while @i <= @ShipInfoMax begin
+        SET @i = 1;
 
-			Select
-				@WaveNmbr = WaveNmbr,
-				@OrdNmbr = OrdNmbr,
-				@ShipNmbr = ShipNmbr,
-				@ShipMethodCode = ShipMethodCode,
-				@FreightAmt = FreightAmt,
-				@FreightCostAmt = FreightCostAmt,
-				@TrkgNmbr = TrkgNmbr,
-				@ActualWeightLb = cast(ActualWeightOz / 16 as decimal(10,4)),
-				@RatedWeightLb = cast(RatedWeightOz / 16 as decimal(10,4)),
-				@SigReq = case when IsSignatureReq = 1 then 'Y' else 'N' end,
-				@SatDel = case when IsSaturdayDelivery = 1 then 'Y' else 'N' end
-			from #ShipInfo
-			where RowID = @i
+        --ShipInfo loop
+        WHILE @i <= @ShipInfoMax
+        BEGIN
 
-			--Carton header (ShipInfo level)
-			set @PacketStr = @PacketStr +
-							'C' + CHAR(9) + 
-							rtrim(@WaveNmbr) + CHAR(9) + 
-							rtrim(@OrdNmbr) + CHAR(9) +
-							rtrim(@ShipNmbr) + CHAR(9) +		--Pass ShpNmbr in CartonNmbr field
-							rtrim(@ShipMethodCode) + CHAR(9) + 
-							'' + CHAR(9) +
-							rtrim(@FreightAmt) + CHAR(9) +
-							rtrim(@FreightCostAmt) + CHAR(9) +
-							rtrim(@TrkgNmbr) + CHAR(9) + 
-							rtrim(@ActualWeightLb) + CHAR(9) +
-							rtrim(@RatedWeightLb) + CHAR(9) + 
-							CHAR(9) + 
-							CHAR(9) +
-							@SigReq + CHAR(9) + 
-							@SatDel + CHAR(30)
+            SELECT @WaveNmbr = WaveNmbr,
+                   @OrdNmbr = OrdNmbr,
+                   @ShipNmbr = ShipNmbr,
+                   @ShipMethodCode = ShipMethodCode,
+                   @FreightAmt = FreightAmt,
+                   @FreightCostAmt = FreightCostAmt,
+                   @TrkgNmbr = TrkgNmbr,
+                   @ActualWeightLb = CAST(ActualWeightOz / 16 AS DECIMAL(10, 4)),
+                   @RatedWeightLb = CAST(RatedWeightOz / 16 AS DECIMAL(10, 4)),
+                   @SigReq = CASE
+                                 WHEN IsSignatureReq = 1 THEN
+                                     'Y'
+                                 ELSE
+                                     'N'
+                             END,
+                   @SatDel = CASE
+                                 WHEN IsSaturdayDelivery = 1 THEN
+                                     'Y'
+                                 ELSE
+                                     'N'
+                             END
+            FROM #ShipInfo
+            WHERE RowID = @i;
 
-			--Get ShipInfo_Item for @ShipNmbr
-			truncate table #ShipInfo_Item
-			insert #ShipInfo_Item (WMSID, ItemBarcode, QtyPacked)
-			select WMSID, ItemBarcode, QtyPacked
-			from GRS..ShipInfo_Item where ShipNmbr = @ShipNmbr order by LinSeqNo
-			select @ShipInfo_ItemMax = max(RowID) from #ShipInfo_Item
-		
-			set @j = 1
+            --Carton header (ShipInfo level)
+            SET @PacketStr
+                = @PacketStr + 'C' + CHAR(9) + RTRIM(@WaveNmbr) + CHAR(9) + RTRIM(@OrdNmbr) + CHAR(9)
+                  + RTRIM(@ShipNmbr) + CHAR(9) + --Pass ShpNmbr in CartonNmbr field
+            RTRIM(@ShipMethodCode) + CHAR(9) + '' + CHAR(9) + RTRIM(@FreightAmt) + CHAR(9) + RTRIM(@FreightCostAmt)
+                  + CHAR(9) + RTRIM(@TrkgNmbr) + CHAR(9) + RTRIM(@ActualWeightLb) + CHAR(9) + RTRIM(@RatedWeightLb)
+                  + CHAR(9) + CHAR(9) + CHAR(9) + @SigReq + CHAR(9) + @SatDel + CHAR(30);
 
-			--ShipInfo_Item loop
-			while @j <= @ShipInfo_ItemMax begin
+            --Get ShipInfo_Item for @ShipNmbr
+            TRUNCATE TABLE #ShipInfo_Item;
+            INSERT #ShipInfo_Item
+            (
+                WMSID,
+                ItemBarcode,
+                QtyPacked
+            )
+            SELECT WMSID,
+                   ItemBarcode,
+                   QtyPacked
+            FROM GRS..ShipInfo_Item
+            WHERE ShipNmbr = @ShipNmbr
+            ORDER BY LinSeqNo;
+            SELECT @ShipInfo_ItemMax = MAX(RowID)
+            FROM #ShipInfo_Item;
 
-				select 
-					@WMSID = WMSID,
-					@ItemBarcode = ItemBarcode,
-					@QtyPacked = QtyPacked
-				from
-					#ShipInfo_Item
-				where RowID = @j
+            SET @j = 1;
 
-				--Carton Detail (ShipInfo_Item level)
-				set @PacketStr = @PacketStr + 
-								'D' + CHAR(9) + 
-								rtrim(@WMSID) + CHAR(9) +
-								rtrim(@ItemBarcode) + CHAR(9) +
-								rtrim(@QtyPacked) + CHAR(30)
+            --ShipInfo_Item loop
+            WHILE @j <= @ShipInfo_ItemMax
+            BEGIN
 
-				set @j = @j + 1
+                SELECT @WMSID = WMSID,
+                       @ItemBarcode = ItemBarcode,
+                       @QtyPacked = QtyPacked
+                FROM #ShipInfo_Item
+                WHERE RowID = @j;
 
-			end -- ShipInfo_Item loop
+                --Carton Detail (ShipInfo_Item level)
+                SET @PacketStr
+                    = @PacketStr + 'D' + CHAR(9) + RTRIM(@WMSID) + CHAR(9) + RTRIM(@ItemBarcode) + CHAR(9)
+                      + RTRIM(@QtyPacked) + CHAR(30);
 
-			set @i = @i + 1
+                SET @j = @j + 1;
 
-		end -- ShipInfo loop
+            END; -- ShipInfo_Item loop
 
-		-- Packet footer
-		Set @PacketStr = @PacketStr + 'T' + CHAR(9) + rtrim(@ShipInfoMax) + CHAR(3)
+            SET @i = @i + 1;
 
+        END; -- ShipInfo loop
 
-		--Update Packet record with Packet String, Status, Warehouse, and WaveNmbr)
-		update grs..ShipInfo_Packets
-		set WaveNmbr = @WaveNmbr,
-			Warehouse = case LEFT(@PickTckt, 3) when '120' then 'BAR' when '020' then 'CS2' else 'LD2' end,
-			PacketStatusCode = 10, --(READY)
-			PacketStr = @PacketStr
-		where PacketID = @PacketID
-
-		--Update PickTicket and Order status = 70 -- CLOSED
-		update GRS..PickTickets 
-		set PickTcktStatusCode = 70
-		where PickTckt = @PickTckt
-
-		update OrderHeader
-		set OrderStatusCode = 70 --CLOSED
-		where PickTckt = @PickTckt
-
-		set @x = @x + 1
-	end --PickTicket loop
-
-----	RETURN PACKET RECORD
---	select * from SendToPM_Packets where PacketID = @PacketID
-		
+        -- Packet footer
+        SET @PacketStr = @PacketStr + 'T' + CHAR(9) + RTRIM(@ShipInfoMax) + CHAR(3);
 
 
-	goto xIT
+        --Update Packet record with Packet String, Status, Warehouse, and WaveNmbr)
+        UPDATE grs..ShipInfo_Packets
+        SET WaveNmbr = @WaveNmbr,
+            Warehouse = CASE LEFT(@Picktckt, 3)
+                            WHEN '120' THEN
+                                'BAR'
+                            WHEN '020' THEN
+                                'CS2'
+                            ELSE
+                                'LD2'
+                        END,
+            PacketStatusCode = 10, --(READY)
+            PacketStr = @PacketStr
+        WHERE PacketID = @PacketID;
 
---==============================================================================================
---EXIT
---==============================================================================================
-xIT:
+        --Update PickTicket and Order status = 70 -- CLOSED
+        UPDATE GRS..PickTickets
+        SET PickTcktStatusCode = 70
+        WHERE PickTckt = @Picktckt;
 
+        UPDATE OrderHeader
+        SET OrderStatusCode = 70 --CLOSED
+        WHERE PickTckt = @Picktckt;
+
+        SET @x = @x + 1;
+    END; --PickTicket loop
+
+    ----	RETURN PACKET RECORD
+    --	select * from SendToPM_Packets where PacketID = @PacketID
+
+
+
+    GOTO xIT;
+
+
+
+    --==============================================================================================
+    --EXIT
+    --==============================================================================================
+    xit:
+
+END;

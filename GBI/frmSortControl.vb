@@ -1,5 +1,6 @@
 ﻿Imports System.IO
 Imports Common.clsCommon
+Imports System.Text
 
 Public Class frmSortControl
 
@@ -22,6 +23,7 @@ Public Class frmSortControl
     Private tblShortages As DataTable
     Private tblVerify As DataTable
     Private tblManual As DataTable
+    Private tblStatus As DataTable
 
     'Badge Controls
 
@@ -315,7 +317,7 @@ Public Class frmSortControl
     Private Sub createRepick()
         Dim dsMiss As DataSet
         Dim strLine As String = String.Empty
-        Dim strfilePath As String = "C:\Users\Admin\Documents\Repicks\"
+        Dim strfilePath As String = "C:\Repicks\"
         Dim strfileName As String = String.Empty
         Dim strfilePathName As String = String.Empty
         Dim objFileStream As FileStream = Nothing
@@ -386,11 +388,16 @@ Public Class frmSortControl
 
         If e.KeyCode = Keys.Enter Then
 
+            If txtManWaveNmbr.Text <> ""
+
             tblManual = sp.FillManualPart(Profile.p_ConnectionString, rtbBarcode.Text)
 
             dgvManual.DataSource = tblManual
             PrintManualLabel()
             rtbBarcode.Clear()
+            Else
+                MessageBox.Show("Please open the wave before scanning a barcode","Alert!",MessageBoxButtons.OK)
+            End If
         End If
 
     End Sub
@@ -406,7 +413,7 @@ Public Class frmSortControl
         Dim Barcode As String
         Dim OrdNmbr As String
 
-        IpAddress = "10.10.211.69"
+        IpAddress = "10.10.211.182"
         port = 9100
 
         WaveNmbr = tblManual.Rows(0).Item("WaveID").ToString()
@@ -421,6 +428,7 @@ Public Class frmSortControl
             "^FO30,90^ADN,36,10^FDOrder# " & OrdNmbr & "^FS" &
             "^FO30,120^ADN,36,10^FDDrop# " & DropLocation & "^FS" &
             "^XZ"
+
         'Open Connection
         Dim client As New System.Net.Sockets.TcpClient
         client.Connect(IpAddress, port)
@@ -433,5 +441,98 @@ Public Class frmSortControl
             'Close Connection
             writer.Close()
         client.Close()
+    End Sub
+
+        Private Sub dgvDrops_MouseUp(sender As Object, e As MouseEventArgs) Handles dgvDrops.MouseUp
+
+        If e.Button = MouseButtons.Right Then
+
+            Dim hit As DataGridView.HitTestInfo = dgvDrops.HitTest(e.X, e.Y)
+
+            'Only RowHeader and Cells (which make up a row) should fire a menu
+            If (hit.Type = DataGridViewHitTestType.RowHeader Or hit.Type = DataGridViewHitTestType.Cell) And hit.RowIndex >= 0 Then
+
+                dgvDrops.ClearSelection()
+                dgvDrops.Rows(hit.RowIndex).Selected = True
+                dgvDrops.CurrentCell = dgvDrops(hit.ColumnIndex, hit.RowIndex)
+                cmsDrops.Items.Clear()
+                cmsDrops.Items.Add("Force close Carton")
+                'cmOrds.Items.Add("Copy ShipNmbr to Clipboard")
+                dgvDrops.ContextMenuStrip = cmsDrops
+                dgvDrops.ContextMenuStrip.Show(dgvDrops, New Point(e.X, e.Y))
+                dgvDrops.ContextMenuStrip = Nothing
+
+            End If
+
+        End If
+    End Sub
+
+    Private Sub cmsDrops_ItemClicked(sender As Object, e As ToolStripItemClickedEventArgs) Handles cmsDrops.ItemClicked
+        Dim CartonId As String = String.Empty
+        Dim Status As String = String.Empty
+        Select Case e.ClickedItem.Text
+
+            Case "Force close Carton"
+                CartonId = dgvDrops.CurrentRow.Cells("CartonId").Value.ToString.Trim
+
+                If CartonId <> ""
+                    tblStatus = sp.CloseCarton(Profile.p_ConnectionString, CartonId)
+
+                    Status = tblStatus.Rows(0).Item("Status").ToString
+
+                If Status = "1"
+                    MessageBox.Show("Carton closed successfully","Success!",MessageBoxButtons.OK)
+                Else
+                    MessageBox.Show("Carton Failed to close","Something went wrong!",MessageBoxButtons.OK)
+                End If
+
+                Else
+                    MessageBox.Show("Please assign a carton and then close","Alert!",MessageBoxButtons.OK)
+                End If
+
+               
+
+        End Select
+
+    End Sub
+
+    Private Sub btnClose_Click(sender As Object, e As EventArgs) Handles btnClose.Click
+                Dim Status As String = String.Empty
+            
+                tblStatus = sp.CloseWave(Profile.p_ConnectionString, txtWaveNmbr.Text)
+
+                Status = tblStatus.Rows(0).Item("Status").ToString
+
+                If Status = "1"
+                    MessageBox.Show("Wave closed successfully","Success!",MessageBoxButtons.OK)
+                    txtWaveNmbr.Clear()
+                    txtUnitsRequired.Clear()
+                    txtUnitsFilled.Clear()
+                    txtDestinations.Clear()
+                    txtOrders.Clear()
+                    GetActiveWave()
+                Else
+                    MessageBox.Show("Wave Failed to close","Something went wrong!",MessageBoxButtons.OK)
+                End If
+    End Sub
+
+    Private Sub btnAssign_Click(sender As Object, e As EventArgs) Handles btnAssign.Click
+
+        Dim Status As String = String.Empty
+
+        If txtWaveNmbr.Text = ""
+            MessageBox.Show("A wave must be active to assign cartons","Alert!",MessageBoxButtons.OK)
+        Else
+                        
+                tblStatus = sp.Test_AssignCartons(Profile.p_ConnectionString)
+
+                Status = tblStatus.Rows(0).Item("Status").ToString
+
+                If Status = "1"
+                    MessageBox.Show("Test Cartons have been assigned","Alert!",MessageBoxButtons.OK)
+                GetActiveWave()
+                End If
+
+        End If
     End Sub
 End Class

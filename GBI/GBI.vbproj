@@ -68,10 +68,10 @@
     <SignManifests>true</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>B9CB978CE65AAD7608070DB18ABF506700E68C8B</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>5A7CCA5E4AD8C3807DF571F259576183D2A77879</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestKeyFile>GBI_TemporaryKey.pfx</ManifestKeyFile>
+    <ManifestKeyFile>GBI_1_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
     <GenerateManifests>true</GenerateManifests>
@@ -152,7 +152,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="GBI_TemporaryKey.pfx" />
+    <None Include="GBI_1_TemporaryKey.pfx" />
     <None Include="My Project\app.manifest" />
     <None Include="My Project\Application.myapp">
       <Generator>MyApplicationCodeGenerator</Generator>

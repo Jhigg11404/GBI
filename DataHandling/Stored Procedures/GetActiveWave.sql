@@ -72,11 +72,6 @@ BEGIN
     EXEC Galaxy.dbo.AddLogInfo @DateTime = @Now,
                                @Process = @Process,
                                @Message = @Msg;
-
-	IF EXISTS
-		(SELECT Waveid FROM galaxy.dbo.waves WHERE status = 'A')
-	Begin
-
 	SELECT 
 		Waveid,
 		COUNT(DISTINCT(orderid)) AS Orderid,
@@ -97,9 +92,8 @@ BEGIN
         [ConfirmedDrops],
         [Status],
         [CartonID]
-    FROM [Galaxy].[dbo].[ProductDistribution];
-
-END;
+    FROM [Galaxy].[dbo].[ProductDistribution]
+	WHERE status <> 'F';
 
 End
 

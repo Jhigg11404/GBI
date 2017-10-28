@@ -1,33 +1,38 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{58403149-A836-456C-8F78-10DB03BF3FF7}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <RootNamespace>DataHandling</RootNamespace>
-    <AssemblyName>DataHandling</AssemblyName>
+    <ProjectGuid>{28CF421C-B67F-4000-B75C-24116F909287}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <StartupObject>OrderClose_FTP.My.MyApplication</StartupObject>
+    <RootNamespace>OrderClose_FTP</RootNamespace>
+    <AssemblyName>OrderClose_FTP</AssemblyName>
     <FileAlignment>512</FileAlignment>
-    <MyType>Windows</MyType>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <MyType>WindowsForms</MyType>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <DefineDebug>true</DefineDebug>
     <DefineTrace>true</DefineTrace>
     <OutputPath>bin\Debug\</OutputPath>
-    <DocumentationFile>DataHandling.xml</DocumentationFile>
+    <DocumentationFile>OrderClose_FTP.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <DefineDebug>false</DefineDebug>
     <DefineTrace>true</DefineTrace>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DocumentationFile>DataHandling.xml</DocumentationFile>
+    <DocumentationFile>OrderClose_FTP.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
   </PropertyGroup>
   <PropertyGroup>
@@ -45,6 +50,9 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -57,13 +65,21 @@
     <Import Include="System.Collections" />
     <Import Include="System.Collections.Generic" />
     <Import Include="System.Data" />
+    <Import Include="System.Drawing" />
     <Import Include="System.Diagnostics" />
+    <Import Include="System.Windows.Forms" />
     <Import Include="System.Linq" />
     <Import Include="System.Xml.Linq" />
     <Import Include="System.Threading.Tasks" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="clsStoredProcedures.vb" />
+    <Compile Include="frmFileWatcher.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmFileWatcher.Designer.vb">
+      <DependentUpon>frmFileWatcher.vb</DependentUpon>
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>
@@ -81,6 +97,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="frmFileWatcher.resx">
+      <DependentUpon>frmFileWatcher.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="My Project\Resources.resx">
       <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.vb</LastGenOutput>
@@ -98,45 +117,21 @@
       <CustomToolNamespace>My</CustomToolNamespace>
       <LastGenOutput>Settings.Designer.vb</LastGenOutput>
     </None>
+    <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Static Data\Galaxy.sql" />
-    <Content Include="Stored Procedures\AbortWave.sql" />
-    <Content Include="Stored Procedures\ActivateWave.sql" />
-    <Content Include="Stored Procedures\AddLogInfo.sql" />
-    <Content Include="Stored Procedures\AssignCarton.sql" />
-    <Content Include="Stored Procedures\test_AssignCartons.sql" />
-    <Content Include="Stored Procedures\CloseOrder.sql" />
-    <Content Include="Stored Procedures\CloseCarton.sql" />
-    <Content Include="Stored Procedures\CloseWave.sql" />
-    <Content Include="Stored Procedures\FillManualPart.sql" />
-    <Content Include="Stored Procedures\GBI_Packets_ADD.sql" />
-    <Content Include="Stored Procedures\GetActiveWave.sql" />
-    <Content Include="Stored Procedures\GetCarriers.sql" />
-    <Content Include="Stored Procedures\GetDropDetail.sql" />
-    <Content Include="Stored Procedures\GetOrdersToClose.sql" />
-    <Content Include="Stored Procedures\GetLogInfo.sql" />
-    <Content Include="Stored Procedures\GetMessagesFromGBI.sql" />
-    <Content Include="Stored Procedures\GetShortages.sql" />
-    <Content Include="Stored Procedures\GetOrderCloseInfo.sql" />
-    <Content Include="Stored Procedures\InsertProcessLog.sql" />
-    <Content Include="Stored Procedures\OrderClose.sql" />
-    <Content Include="Stored Procedures\PendingWaveLookup.sql" />
-    <Content Include="Stored Procedures\SendRepick.sql" />
-    <Content Include="Stored Procedures\SocketConnectionInfo_GET.sql" />
-    <Content Include="Stored Procedures\SQLServerConnection_GET.sql" />
-    <Content Include="Stored Procedures\syErrorLog_ADD.sql" />
-    <Content Include="Stored Procedures\TestSocketMessageLookup.sql" />
-    <Content Include="Stored Procedures\VerifyBadge.sql" />
-    <Content Include="Tables\ProductDistribution.sql" />
-    <Content Include="Tables\Sort_Info.sql" />
+    <ProjectReference Include="..\Common\Common.vbproj">
+      <Project>{41924ac0-de55-491d-96d0-0092e109afbd}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DataHandling\DataHandling.vbproj">
+      <Project>{58403149-a836-456c-8f78-10db03bf3ff7}</Project>
+      <Name>DataHandling</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ErrorHandling\ErrorHandling.vbproj">
+      <Project>{c5c85c55-4f02-4c5f-a59d-1a299cc6df2b}</Project>
+      <Name>ErrorHandling</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>

@@ -15,8 +15,7 @@ SET ANSI_NULLS ON;
 GO
 SET QUOTED_IDENTIFIER ON;
 GO
-CREATE PROCEDURE [dbo].FillManualPart
-@Barcode varchar(15)
+CREATE PROCEDURE [dbo].FillManualPart @Barcode VARCHAR(15)
 AS
 /*
 ===============================================================================
@@ -53,7 +52,19 @@ DECLARE @DateTime DATETIME,
         @Process VARCHAR(50),
         @Message VARCHAR(250),
         @Msg VARCHAR(250),
-        @Count TINYINT;
+        @Count TINYINT,
+        @intErrorCode INT;
+
+DECLARE @WaveID VARCHAR(8),
+        @UPC VARCHAR(15),
+        @SKU VARCHAR(15),
+        @DropLocation INT,
+        @OrderID VARCHAR(20),
+        @QtyRequired INT,
+        @QtyRemaining INT,
+        @ConfirmedDrops INT,
+        @Status CHAR(1),
+        @CartonID VARCHAR(30);
 
 
 -- initialise
@@ -66,25 +77,54 @@ SET @Now = GETDATE();
 
 ===============================================================================
 */
+BEGIN TRAN;
+
+SELECT TOP 1
+    @WaveID = [WaveID],
+    @UPC = [UPC],
+    @SKU = [SKU],
+    @DropLocation = [DropLocation],
+    @OrderID = [OrderID],
+    @QtyRequired = [QtyRequired],
+    @QtyRemaining = [QtyRemaining],
+    @ConfirmedDrops = [ConfirmedDrops],
+    @Status = [Status],
+    @CartonID = [CartonID]
+FROM [Galaxy].[dbo].[ProductDistribution]
+WHERE QtyRemaining <> 0
+      AND UPC = @Barcode
+ORDER BY DropLocation;
+
+UPDATE galaxy.dbo.productDistribution
+SET QtyRemaining = @QtyRemaining - 1
+WHERE upc = @UPC
+      AND droplocation = @DropLocation;
+
+SELECT @intErrorCode = @@ERROR;
+IF (@intErrorCode <> 0)
+    GOTO PROBLEM;
+
+COMMIT TRAN;
+
+PROBLEM:
+IF (@intErrorCode <> 0)
 BEGIN
-
-SELECT Top 1
-       [WaveID]
-      ,[UPC]
-      ,[SKU]
-      ,[DropLocation]
-      ,[OrderID]
-      ,[QtyRequired]
-      ,[QtyRemaining]
-      ,[ConfirmedDrops]
-      ,[Status]
-      ,[CartonID]
-  FROM [Galaxy].[dbo].[ProductDistribution]
-  Where QtyRemaining <> 0
-  and UPC = @Barcode
-  Order by DropLocation
-
+    PRINT 'Unexpected error occurred!';
+    ROLLBACK TRAN;
 END;
+
+SELECT @WaveID AS WaveId,
+       @UPC AS UPC,
+       @SKU AS SKU,
+       @DropLocation AS DropLocation,
+       @OrderID AS OrderID,
+       @QtyRequired AS QtyRequired,
+       @QtyRemaining AS QtyRemaining,
+       @ConfirmedDrops AS ConfirmedDrops,
+       @Status AS [Status],
+       @CartonID AS CartonId;
+
+	
 
 
 

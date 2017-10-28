@@ -1,17 +1,22 @@
-﻿USE [Galaxy]
+﻿USE [Galaxy];
 GO
-IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = object_id (N'[dbo].[ActivateWave]') AND xtype = 'P') 
-DROP Procedure dbo.ActivateWave
+IF EXISTS
+(
+    SELECT *
+    FROM dbo.sysobjects
+    WHERE id = OBJECT_ID(N'[dbo].[ActivateWave]')
+          AND xtype = 'P'
+)
+    DROP PROCEDURE dbo.ActivateWave;
 GO
 
 /****** Object:  StoredProcedure [dbo].[ActivateWave]    Script Date: 9/9/2017 2:14:50 PM ******/
-SET ANSI_NULLS ON
+SET ANSI_NULLS ON;
 GO
-SET QUOTED_IDENTIFIER ON
+SET QUOTED_IDENTIFIER ON;
 GO
-Create procedure dbo.[ActivateWave]
-@WaveId varchar(8)
-as
+CREATE PROCEDURE dbo.[ActivateWave] @WaveId VARCHAR(8)
+AS
 /*
 ===============================================================================
 	File: 
@@ -32,201 +37,205 @@ as
 	----------  -------     ---------------------------------------------------                             
 ===============================================================================
 */
-set nocount on 
+SET NOCOUNT ON;
 
-declare
-    @error_severity			int
-    ,@error_state			int
-    ,@error_number			int
-    ,@error_line			int
-    ,@error_message			varchar(245)
-	,@rowcount				int
-	,@result				int
-	,@return_status			smallint
-	-- other work variables
+DECLARE @error_severity INT,
+        @error_state INT,
+        @error_number INT,
+        @error_line INT,
+        @error_message VARCHAR(245),
+        @rowcount INT,
+        @result INT,
+        @return_status SMALLINT;
+-- other work variables
 
-		Declare @WaveTable table
-		(
-			WaveId varchar(8),
-			OrderId varchar(10),
-			Sku varchar(12),
-			Barcode varchar(15),
-			DropLocation smallint,
-			QtyRequired smallint
-		)
+DECLARE @Wave TABLE
+(
+    WaveId VARCHAR(8),
+    OrderId VARCHAR(10),
+    DropLocation INT IDENTITY(3, 1)
+);
 
-  --Log Info
-	Declare 
-	 @DateTime DateTime
-	,@Now DateTime
-	,@Process Varchar(50)
-	,@Message Varchar(250)
-	,@Msg Varchar(250)
-	,@Count tinyint
-	
+DECLARE @Orders TABLE
+(
+    OrderId VARCHAR(10),
+    Sku VARCHAR(12),
+    Barcode VARCHAR(15),
+    QtyRequired SMALLINT
+);
+
+--Log Info
+DECLARE @DateTime DATETIME,
+        @Now DATETIME,
+        @Process VARCHAR(50),
+        @Message VARCHAR(250),
+        @Msg VARCHAR(250),
+        @Count TINYINT;
+
 
 -- initialise
-set @return_status = 0
-set @Process = 'Proc = ActivateWave'
-set @Now = Getdate()
+SET @return_status = 0;
+SET @Process = 'Proc = ActivateWave';
+SET @Now = GETDATE();
 
 /*
 ===============================================================================
 
 ===============================================================================
 */
-begin
-	
-	Set @Msg = 'Activating Wave number ' + @Waveid + '.'
-	Exec Galaxy.dbo.AddLogInfo @DateTime = @Now, @Process = @Process, @Message = @Msg
+BEGIN
+
+    SET @Msg = 'Activating Wave number ' + @WaveId + '.';
+    EXEC Galaxy.dbo.AddLogInfo @DateTime = @Now,
+                               @Process = @Process,
+                               @Message = @Msg;
 
 
-	TRUNCATE TABLE Galaxy.dbo.ProductDistribution
-	TRUNCATE TABLE Galaxy.dbo.Waves
-	TRUNCATE TABLE Galaxy.dbo.Profile_Configuration
-	
-		Insert into @WaveTable
-		(
-			WaveId,
-			OrderId,
-			sku,
-			Barcode,
-			DropLocation,
-			QtyRequired
-		)
-		Select 
-			ord.waveid,
-			ord.orderid,
-			dtl.ProductID,
-			dtl.verifybcr,
-			ord.ActiveDest + 2,
-			dtl.QtyRequired
-		from 
-			[SRV-1LD2APIX01].Apix2.dbo.orders ord
-		inner join 
-			[SRV-1LD2APIX01].apix2.dbo.details dtl
-		on 
-			ord.orderid = dtl.orderid
-		Where 
-			ord.Waveid = @WaveID
+    TRUNCATE TABLE Galaxy.dbo.ProductDistribution;
+    TRUNCATE TABLE Galaxy.dbo.Waves;
+    TRUNCATE TABLE Galaxy.dbo.Profile_Configuration;
+
+    INSERT INTO @Wave
+    (
+        WaveId,
+        OrderId
+    )
+    SELECT DISTINCT
+        ord.Waveid,
+        ord.orderid
+    FROM [SRV-1LD2APIX01].Apix2.dbo.orders ord
+        INNER JOIN [SRV-1LD2APIX01].apix2.dbo.details dtl
+            ON ord.orderid = dtl.orderid
+    WHERE ord.Waveid = @WaveId;
+
+    INSERT INTO @Orders
+    (
+        OrderId,
+        Sku,
+        Barcode,
+        QtyRequired
+    )
+    SELECT ord.orderid,
+           dtl.ProductID,
+           dtl.verifybcr,
+           dtl.QtyRequired
+    FROM [SRV-1LD2APIX01].Apix2.dbo.orders ord
+        INNER JOIN [SRV-1LD2APIX01].apix2.dbo.details dtl
+            ON ord.orderid = dtl.orderid
+    WHERE ord.Waveid = @WaveId;
 
 
-Insert into Galaxy.dbo.Waves
-	(
-		SorterId,
-		WaveId,
-		PickPlan,
-		Status,
-		SortType,
-		Priority,
-		WaveLoadTime,
-		WaveStartTime,
-		WaveCloseTime,
-		VendorConfigId,
-		DefaultMaxCount
-	)
-Values
-	(
-		'A',
-		@Waveid,
-		'',
-		'N',
-		'OF',
-		1,
-		Getdate(),
-		Getdate(),
-		'1900-01-01',
-		'',
-		''
-	)
+    INSERT INTO Galaxy.dbo.Waves
+    (
+        SorterId,
+        WaveId,
+        PickPlan,
+        Status,
+        SortType,
+        Priority,
+        WaveLoadTime,
+        WaveStartTime,
+        WaveCloseTime,
+        VendorConfigId,
+        DefaultMaxCount
+    )
+    VALUES
+    ('A', @WaveId, '', 'N', 'OF', 1, GETDATE(), GETDATE(), '1900-01-01', '', '');
 
-Update Galaxy.dbo.Carriers
-Set VendorId = @Waveid,
-	RecNum = @Waveid
+    UPDATE Galaxy.dbo.Carriers
+    SET VendorId = @WaveId,
+        RecNum = @WaveId;
 
-Update Galaxy.dbo.Drops
-SET WaveID = CASE
-                 WHEN ExtDrop
-                      BETWEEN 3 AND 150 THEN
-                     ''
-                 WHEN ExtDrop = 1 THEN
-                     'No Read'
-                 WHEN ExtDrop = 2 THEN
-                     'No Need'
-                 ELSE
-                     ''
-             END,
-    Status = CASE
-                 WHEN ExtDrop IN ( 1, 2 ) THEN
-                     'N'
-                 ELSE
-                     'U'
-             END,
-    LastChangeTS = GETDATE(),
-    EnRoute_Count = 0,
-    EnRoute_Value = 0,
-    EnRoute_Volume = 0,
-    EnRoute_Weight = 0,
-    Color = 'X',
-    Tier = '1'
+    UPDATE Galaxy.dbo.Drops
+    SET WaveID = CASE
+                     WHEN ExtDrop
+                          BETWEEN 3 AND 150 THEN
+                         ''
+                     WHEN ExtDrop = 1 THEN
+                         'No Read'
+                     WHEN ExtDrop = 2 THEN
+                         'No Need'
+                     ELSE
+                         ''
+                 END,
+        Status = CASE
+                     WHEN ExtDrop IN ( 1, 2 ) THEN
+                         'N'
+                     ELSE
+                         'U'
+                 END,
+        LastChangeTS = GETDATE(),
+        EnRoute_Count = 0,
+        EnRoute_Value = 0,
+        EnRoute_Volume = 0,
+        EnRoute_Weight = 0,
+        Color = 'X',
+        Tier = '1';
 
 
-Insert into Galaxy.dbo.ProductDistribution
-Select
-	'A',
-	wve.WaveId,
-	wve.Barcode,
-	wve.sku,
-	'',
-	wve.DropLocation,
-	wve.Orderid,
-	wve.QtyRequired,
-	wve.QtyRequired,
-	0,
-	'N',
-	'',
-	'',
-	'',
-	'',
-	'',
-	'',
-	'',
-	'',
-	'',
-	'',
-	'',
-	'',
-	'',
-	'',
-	0,
-	0
-From
-	@WaveTable wve
-Order by DropLocation
+    INSERT INTO Galaxy.dbo.ProductDistribution
+    SELECT 'A',
+           wve.WaveId,
+           ord.Barcode,
+           ord.Sku,
+           '',
+           wve.DropLocation,
+           wve.OrderId,
+           ord.QtyRequired,
+           ord.QtyRequired,
+           0,
+           'N',
+           '',
+           '',
+           '',
+           '',
+           '',
+           '',
+           '',
+           '',
+           '',
+           '',
+           '',
+           '',
+           '',
+           '',
+           0,
+           0
+    FROM @Wave wve
+        INNER JOIN @Orders AS ord
+            ON wve.OrderId = ord.OrderId
+    ORDER BY DropLocation;
 
-Insert into Galaxy.dbo.Profile_Configuration
-Select Distinct
-	wve.Waveid,
-	wve.DropLocation,
-	wve.OrderId,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0
-From
-	@WaveTable wve
+    INSERT INTO Galaxy.dbo.Profile_Configuration
+    SELECT DISTINCT
+        wve.WaveId,
+        wve.DropLocation,
+        wve.OrderId,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+    FROM @Wave wve;
 
-exec Galaxy.dbo.SetWaveDrops @Wave = @Waveid
+    EXEC Galaxy.dbo.SetWaveDrops @Wave = @WaveId;
 
-Update Waves Set status = 'A' where Waveid = @Waveid
+    UPDATE Waves
+    SET status = 'A'
+    WHERE Waveid = @WaveId;
 
-	Set @Msg = 'Finished Activating Wave number ' + @Waveid + '.'
-	Exec Galaxy.dbo.AddLogInfo @DateTime = @Now, @Process = @Process, @Message = @Msg
+    DELETE si
+    FROM Galaxy.dbo.Sort_Info AS si
+    WHERE si.waveid = @WaveId;
 
-End
+    SET @Msg = 'Finished Activating Wave number ' + @WaveId + '.';
+    EXEC Galaxy.dbo.AddLogInfo @DateTime = @Now,
+                               @Process = @Process,
+                               @Message = @Msg;
+
+END;
 

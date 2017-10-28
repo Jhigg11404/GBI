@@ -1,16 +1,16 @@
-﻿USE [Apix2]
+﻿USE Galaxy
 GO
-IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = object_id (N'[dbo].[CloseWave]') AND OBJECTPROPERTY(id, N'IsProdedure') = 1) 
+IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = object_id (N'[dbo].[CloseWave]') AND type = 'P')
 DROP Procedure dbo.CloseWave
 GO
 
-/****** Object:  StoredProcedure [GBI].[PendingWaveLookup]    Script Date: 9/9/2017 2:14:50 PM ******/
+/****** Object:  StoredProcedure [GBI].[CloseWave]    Script Date: 9/9/2017 2:14:50 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
 Create procedure [dbo].[CloseWave]
-
+@WaveID VARCHAR(8)
 as
 /*
 ===============================================================================
@@ -56,7 +56,7 @@ declare
 
 -- initialise
 set @return_status = 0
-set @Process = 'Proc = GetLogInfo'
+set @Process = 'Proc = CloseWave'
 set @Now = Getdate()
 
 /*
@@ -66,15 +66,60 @@ set @Now = Getdate()
 */
 begin 
 
-    Set @Msg = 'Closing Wave On GBI, Wave Number: ' + @WaveNmbr
-	Exec Galaxy.dbo.AddLogInfo @DateTime = @Now, @Process = @Process, @Message = @Msg
+   SET @Msg = 'Closing Wave On GBI, Wave Number: ' + @WaveID;
+    EXEC Galaxy.dbo.AddLogInfo @DateTime = @Now,
+                               @Process = @Process,
+                               @Message = @Msg;
 
-	Update Waves Set status = 'F' where Waveid = @Waveid
+    INSERT INTO galaxy.dbo.Sort_info
+    (
+        [WaveID],
+        [UPC],
+        [SKU],
+        [DropLocation],
+        [OrderID],
+        [QtyRequired],
+        [QtyRemaining],
+        [ConfirmedDrops],
+        [Status],
+        [CartonID],
+        [OrderClosed]
+    )
+    SELECT pd.Waveid,
+           pd.Upc,
+           pd.sku,
+           pd.droplocation,
+           pd.orderid,
+           pd.qtyrequired,
+           pd.qtyremaining,
+           pd.confirmedDrops,
+           pd.status,
+           pd.CartonId,
+           0
+    FROM Galaxy.dbo.ProductDistribution pd
+    WHERE pd.[Status] <> 'F';
 
-	
+	UPDATE Galaxy.dbo.ProductDistribution
+	SET Status = 'F'
+	WHERE Status <> 'F'
 
-    Set @Msg = @WaveNmbr + ' has been closed' 
-	Exec Galaxy.dbo.AddLogInfo @DateTime = @Now, @Process = @Process, @Message = @Msg
+    EXEC Galaxy.dbo.SetWaveDropStatus @WaveID, 'F';
 
+    UPDATE Waves
+    SET status = 'F'
+    WHERE Waveid = @Waveid;
+
+	DELETE pd 
+	FROM Galaxy.dbo.ProductDistribution AS pd
+	WHERE pd.WaveID = @WaveID
+
+	SET @return_status = 1
+
+	SELECT @return_status AS 'Status'
+
+    SET @Msg = @WaveID + ' has been closed';
+    EXEC Galaxy.dbo.AddLogInfo @DateTime = @Now,
+                               @Process = @Process,
+                               @Message = @Msg;
 end 
 

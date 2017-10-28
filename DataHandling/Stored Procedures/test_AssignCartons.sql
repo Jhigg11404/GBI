@@ -4,25 +4,25 @@ IF EXISTS
 (
     SELECT *
     FROM dbo.sysobjects
-    WHERE id = OBJECT_ID(N'[dbo].[GetShortages]')
+    WHERE id = OBJECT_ID(N'[dbo].[Test_AssignCartons]')
           AND type = 'P'
 )
-    DROP PROCEDURE dbo.GetShortages;
+    DROP PROCEDURE dbo.Test_AssignCartons;
 GO
 
-/****** Object:  StoredProcedure [dbo].[GetShortages]    Script Date: 9/9/2017 2:14:50 PM ******/
+/****** Object:  StoredProcedure [GBI].[Test_AssignCartons]    Script Date: 9/9/2017 2:14:50 PM ******/
 SET ANSI_NULLS ON;
 GO
 SET QUOTED_IDENTIFIER ON;
 GO
-CREATE PROCEDURE [dbo].[GetShortages]
+CREATE PROCEDURE [dbo].[Test_AssignCartons]
 AS
 /*
 ===============================================================================
 	File: 
-	Name: GetShortages
+	Name: CloseWave
 	Desc: AENT - GBI
-		Returns shortages for waves for the GBI sorter
+		Closes an active wave on the sorter
 	Auth: Higginbotham, Joshua
 	Called by:   
              
@@ -47,6 +47,7 @@ DECLARE @error_severity INT,
         @return_status SMALLINT;
 -- other work variables
 
+
 --Log Info
 DECLARE @DateTime DATETIME,
         @Now DATETIME,
@@ -58,7 +59,7 @@ DECLARE @DateTime DATETIME,
 
 -- initialise
 SET @return_status = 0;
-SET @Process = 'Proc = GetShortages';
+SET @Process = 'Proc = Test_AssignCartons';
 SET @Now = GETDATE();
 
 /*
@@ -68,23 +69,18 @@ SET @Now = GETDATE();
 */
 BEGIN
 
-    SET @Msg = 'Getting shortage Info from the Database';
-    EXEC Galaxy.dbo.AddLogInfo @DateTime = @Now,
-                               @Process = @Process,
-                               @Message = @Msg;
+    UPDATE pd
+    SET pd.cartonid = tc.cartonid
+    FROM Galaxy.dbo.ProductDistribution AS pd
+        INNER JOIN Galaxy.dbo.testCartonIds AS tc
+            ON pd.DropLocation = tc.DropLocation;
 
-    SELECT [WaveID],
-           [UPC],
-           [sku],
-           [DropLocation],
-           [OrderID],
-           [QtyRequired],
-           [ConfirmedDrops],
-           [QtyRemaining]
-    FROM [Galaxy].[dbo].[ProductDistribution]
-    WHERE QtyRemaining > 0
-          AND status <> 'F'
-    ORDER BY DropLocation;
+    IF @@ROWCOUNT <> 0
+    BEGIN
+        SET @return_status = 1;
+    END;
+
+    SELECT @return_status AS 'Status';
 
 END;
 

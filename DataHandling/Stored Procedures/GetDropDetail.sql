@@ -5,7 +5,7 @@ IF EXISTS
     SELECT *
     FROM dbo.sysobjects
     WHERE id = OBJECT_ID(N'[dbo].[GetDrops]')
-          AND OBJECTPROPERTY(id, N'IsProdedure') = 1
+          AND type = 'P'
 )
     DROP PROCEDURE dbo.GetDrops;
 GO
@@ -78,6 +78,7 @@ BEGIN
            SUM(QtyRemaining) AS QtyRemaining,
            [Status]
     FROM [Galaxy].[dbo].[ProductDistribution]
+	WHERE status <> 'F'
     GROUP BY OrderID,
              CartonID,
              DropLocation,

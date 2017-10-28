@@ -31,6 +31,58 @@ Public Class clsStoredProcedures
 
     End Function
 
+    Public Function Test_AssignCartons(ByVal ConnectionString As String) As DataTable
+
+        Dim params As New Dictionary(Of String, String)
+
+        Test_AssignCartons = GetDS(ConnectionString, "Test_AssignCartons", params).Tables(0)
+
+    End Function
+
+        Public Function CloseCarton(ByVal ConnectionString As String, ByVal CartonId As String) As DataTable
+
+        Dim params As New Dictionary(Of String, String)
+        params.Add("@CartonId", CartonId)
+
+        CloseCarton = GetDS(ConnectionString, "CloseCarton", params).Tables(0)
+
+    End Function
+
+    Public Function CloseOrder(ByVal ConnectionString As String, ByVal OrderId As String) As DataTable
+
+        Dim params As New Dictionary(Of String, String)
+        params.Add("@OrderId", OrderID)
+
+        CloseOrder = GetDS(ConnectionString, "CloseOrder", params).Tables(0)
+
+    End Function
+
+        Public Function CloseWave(ByVal ConnectionString As String, ByVal WaveId As String) As DataTable
+
+        Dim params As New Dictionary(Of String, String)
+        params.Add("@WaveId", WaveId)
+
+        CloseWave = GetDS(ConnectionString, "CloseWave", params).Tables(0)
+
+    End Function
+
+    Public Function GetOrdersToClose(ByVal ConnectionString As String) As DataTable
+
+        Dim params As New Dictionary(Of String, String)
+       
+        GetOrdersToClose = GetDS(ConnectionString, "GetOrdersToClose", params).Tables(0)
+
+    End Function
+
+    Public Function GetOrderCloseInfo(ByVal ConnectionString As String, ByVal BoxId As String) As DataSet
+
+        Dim params As New Dictionary(Of String, String)
+        params.Add("@BoxId", BoxID)
+
+        Return GetDS(ConnectionString, "GetOrderCloseInfo", params)
+
+    End Function
+
     Public Function AbortWave(ByVal ConnectionString As String, ByVal Waveid As String, ByVal AbortType As String, ByVal BadgeId As String) As DataSet
 
         Dim params As New Dictionary(Of String, String)

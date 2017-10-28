@@ -16,7 +16,7 @@ Public Class clsGetBox
     Private ep As New Common.errParams(System.Reflection.MethodInfo.GetCurrentMethod.DeclaringType.Name, "", DisplayIt, NotifyIT, LogIt)
 
     'Instantiate Stored Procedures 
-    Private sp As New GBI.clsStoredProcedures
+    Private sp As New datahandling.clsStoredProcedures
 
     'Data tables
     Private tblSocket As DataTable
